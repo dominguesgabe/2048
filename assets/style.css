@@ -1,0 +1,42 @@
+* {
+    color: #fff;
+    font-size: 1.1em;
+}
+body {
+    background-color: rgb(53, 53, 53);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+h1 {
+    font-size: 2em;
+}
+.container {
+    width: 600px;
+    height: 600px;
+    background-color: rgb(61, 40, 134);
+    border: 3px solid rgb(62, 14, 236);
+    border-radius: 10px;
+    box-sizing: border-box;
+
+    /* display: grid; */
+}
+.game-block {
+    width: 100%;
+    text-align: center;
+    padding: 40px 20px;
+}
+.line:not(:first-child) {
+    margin-top: 20px;
+}
+.block {
+    padding-top: 16px;
+    width: 90px;
+    height: 90px;
+    background-color: rgb(90, 27, 190);
+    border: 3px solid rgb(106, 70, 235);
+    text-align: center;
+    display: inline-block;
+    border-radius: 10px;
+}

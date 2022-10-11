@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR" ng-app="app2048">
+    <head>
+        <meta charset="UTF-8">
+        <title>2048</title>
+        <link rel="stylesheet" href="/assets/style.css">
+        <link rel="stylesheet" href="/assets/reset.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+    </head>
+    <body ng-controller="appController">
+        <h1>{{ title }}</h1>
+        <div class="container">
+            <div class="game-block">
+                <div class="line">
+                    <span class="block">
+                        {{ positionsX[0] + positionsY[0] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[0] + positionsY[1] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[0] + positionsY[2] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[0] + positionsY[3] }}
+                    </span>
+                </div>
+                <div class="line">
+                    <span class="block">
+                        {{ positionsX[1] + positionsY[0] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[1] + positionsY[1] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[1] + positionsY[2] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[1] + positionsY[3] }}
+                    </span>
+                </div>
+                <div class="line">
+                    <span class="block">
+                        {{ positionsX[2] + positionsY[0] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[2] + positionsY[1] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[2] + positionsY[2] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[2] + positionsY[3] }}
+                    </span>
+                </div>
+                <div class="line">
+                    <span class="block">
+                        {{ positionsX[3] + positionsY[0] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[3] + positionsY[1] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[3] + positionsY[2] }}
+                    </span>
+                    <span class="block">
+                        {{ positionsX[3] + positionsY[3] }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script src="./app.js"></script>
+    </body>
+</html>
