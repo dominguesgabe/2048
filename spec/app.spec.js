@@ -5,6 +5,6 @@ describe('appController', function () {
         let test;
         const controller = $controller('appController', { $scope: test });
 
-        expect(test).toBe('hi gab');
+        expect(test).toBe('2048');
     }))
 })

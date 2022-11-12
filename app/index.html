@@ -8,66 +8,17 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
     </head>
     <body ng-controller="appController">
-        <h1>{{ title }}</h1>
-        <div class="container">
-            <div class="game-block">
-                <div class="line">
-                    <span class="block">
-                        {{ positionsX[0] + positionsY[0] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[0] + positionsY[1] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[0] + positionsY[2] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[0] + positionsY[3] }}
-                    </span>
-                </div>
-                <div class="line">
-                    <span class="block">
-                        {{ positionsX[1] + positionsY[0] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[1] + positionsY[1] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[1] + positionsY[2] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[1] + positionsY[3] }}
-                    </span>
-                </div>
-                <div class="line">
-                    <span class="block">
-                        {{ positionsX[2] + positionsY[0] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[2] + positionsY[1] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[2] + positionsY[2] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[2] + positionsY[3] }}
-                    </span>
-                </div>
-                <div class="line">
-                    <span class="block">
-                        {{ positionsX[3] + positionsY[0] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[3] + positionsY[1] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[3] + positionsY[2] }}
-                    </span>
-                    <span class="block">
-                        {{ positionsX[3] + positionsY[3] }}
-                    </span>
-                </div>
-            </div>
+        <h1>2048</h1>{{positions}}
+        <div ng-model="positions" class="grid-container">
+            <tr ng-repeat="position in positions">
+                <td ng-repeat="item in position" class="grid-item">
+                    {{ item }}
+                </td>
+            </tr>
+        </div>
+        
+        <div class="bottom-container">
+            <button class="start-btn" ng-click="startGame()" ng-disabled="gameInProgress">Começar!</button>
         </div>
         <script src="./app.js"></script>
     </body>
