@@ -8,15 +8,14 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
     </head>
     <body ng-controller="appController">
-        <h1>2048</h1>{{positions}}
-        <div ng-model="positions" class="grid-container">
-            <tr ng-repeat="position in positions">
+        <h1>2048</h1>
+        <table class="grid-container">
+            <tr ng-repeat="position in positions" class="grid-row">
                 <td ng-repeat="item in position" class="grid-item">
                     {{ item }}
                 </td>
             </tr>
-        </div>
-        
+        </table>
         <div class="bottom-container">
             <button class="start-btn" ng-click="startGame()" ng-disabled="gameInProgress">Começar!</button>
         </div>

@@ -9,12 +9,13 @@ app2048.controller('appController', function appController($scope) {
         {0: null, 1: null, 2: null, 3: null},
         {0: null, 1: null, 2: null, 3: null}
     ];
-    // $scope.positions = {
-    //     0: {0: null, 1: null, 2: null, 3: null},
-    //     1: {0: null, 1: null, 2: null, 3: null},
-    //     2: {0: null, 1: null, 2: null, 3: null},
-    //     3: {0: null, 1: null, 2: null, 3: null}
-    // };
+
+    // $scope.positions = [
+    //     {0: 'a', 1: 'b', 2: 'c', 3: 'd'},
+    //     {0: 'e', 1: 'f', 2: 'g', 3: 'h'},
+    //     {0: 'i', 1: 'j', 2: 'k', 3: 'l'},
+    //     {0: 'm', 1: 'n', 2: 'o', 3: 'p'}
+    // ];
 
     $scope.startGame = () => {
         for(i = 0; i < 2; i++) {
