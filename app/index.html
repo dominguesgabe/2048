@@ -7,11 +7,11 @@
         <link rel="stylesheet" href="/assets/reset.css">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
     </head>
-    <body ng-controller="appController">
-        <h1>2048</h1>
-        <table class="grid-container">
+    <body ng-controller="appController" ng-keyup="userClick($event.key)">
+        <h1>2048</h1>{{positions}}
+        <table class="grid-container" ng-model="positions">
             <tr ng-repeat="position in positions" class="grid-row">
-                <td ng-repeat="item in position" class="grid-item">
+                <td ng-repeat="item in position" class="grid-item" ng-class="itemColor(item)">
                     {{ item }}
                 </td>
             </tr>

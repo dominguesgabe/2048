@@ -33,7 +33,7 @@ h1 {
     align-items: center;
     background-color: rgb(61, 40, 134);
     border: 3px solid rgb(62, 14, 236);
-
+    border-radius: 8px;
 }
 .grid-row {
     display: flex;
@@ -83,11 +83,15 @@ h1 {
     background-color: #7ca6f5;
     border: 3px solid #a4c2fa;
 }
+.orange-item {
+    background-color: #f5ac7c;
+    border: 3px solid #fad2a4;
+}
 .green-item {
     background-color: #9ef57c;
     border: 3px solid #c3faa4;
 }
-.orange-item {
-    background-color: #f5ac7c;
-    border: 3px solid #fad2a4;
+.purple-item {
+    background-color: #aa7cf5;
+    border: 3px solid #c9a4fa;
 }
