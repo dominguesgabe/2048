@@ -18,7 +18,9 @@ app2048.controller('appController', function appController($scope) {
     }
 
     $scope.userClick = (key) => {
-        if($scope.gameInProgress) {
+        const arrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+
+        if($scope.gameInProgress && arrows.includes(key)) {
             generateNumberOnEmptyPosition();
         }
     }
@@ -46,14 +48,8 @@ app2048.controller('appController', function appController($scope) {
         }
     }
 
-    const randomNum = (limit, allowZero = true) => {
-        let number = Math.floor(Math.random() * limit);
-
-        if (number == 0 && allowZero == false) {
-            number = randomNum(limit);
-        }
-
-        return number;
+    const randomNum = (limit) => {
+        return Math.floor(Math.random() * limit);
     }
 
     const randomNumTwoOrFour = () => {
@@ -63,73 +59,73 @@ app2048.controller('appController', function appController($scope) {
         return numberArray[random];
     }
 
-    const generateNumberOnEmptyPosition = () => {
-        let randomPosition = randomNum(16);
+    const randomNumberPosition = () => {
+        let randomNumberOfPosition = randomNum(16);
+        let randomPosition = [];
 
-        console.log(randomPosition);
-
-        // if (randomPosition <= 16 && randomPosition > 12) {
-        //     switch(randomPosition) {
-        //         case 13:
-        //             randomPosition = [3,0]
-        //         case 14:
-        //             randomPosition = [3,1]
-        //         case 15:
-        //             randomPosition = [3,2]
-        //         case 16:
-        //             randomPosition = [3,3]
-        //     }
-        // } else if (randomPosition <= 12 && randomPosition > 8) {
-        //     switch(randomPosition) {
-        //         case 9:
-        //             randomPosition = [2,0]
-        //         case 10:
-        //             randomPosition = [2,1]
-        //         case 11:
-        //             randomPosition = [2,2]
-        //         case 12:
-        //             randomPosition = [2,3]
-        //     }
-        // } else if (randomPosition <= 8 && randomPosition > 4) {
-        //     switch(randomPosition) {
-        //         case 5:
-        //             randomPosition = [1,0]
-        //         case 6:
-        //             randomPosition = [1,1]
-        //         case 7:
-        //             randomPosition = [1,2]
-        //         case 8:
-        //             randomPosition = [1,3]
-        //     }
-        // } else if (randomPosition <=  4) {
-        //     switch(randomPosition) {
-        //         case 1:
-        //             randomPosition = [1,0]
-        //         case 2:
-        //             randomPosition = [1,1]
-        //         case 3:
-        //             randomPosition = [1,2]
-        //         case 4:
-        //             randomPosition = [1,3]
-        //     }
-        // }
-
-        switch (randomPosition) {
-            case
+        switch (randomNumberOfPosition) {
+            case 0:
+                randomPosition = [0,0];
+                break;
+            case 1:
+                randomPosition = [0,1];
+                break;
+            case 2:
+                randomPosition = [0,2];
+                break;
+            case 3:
+                randomPosition = [0,3];
+                break;
+            case 4:
+                randomPosition = [1,0];
+                break;
+            case 5:
+                randomPosition = [1,1];
+                break;
+            case 6:
+                randomPosition = [1,2];
+                break;
+            case 7:
+                randomPosition = [1,3];
+                break;
+            case 8:
+                randomPosition = [2,0];
+                break;
+            case 9:
+                randomPosition = [2,1];
+                break;
+            case 10:
+                randomPosition = [2,2];
+                break;
+            case 11:
+                randomPosition = [2,3];
+                break;
+            case 12:
+                randomPosition = [3,0];
+                break;
+            case 13:
+                randomPosition = [3,1];
+                break;
+            case 14:
+                randomPosition = [3,2];
+                break;
+            case 15:
+                randomPosition = [3,3];
+                break;
         }
 
-        console.log(randomPosition);
-        
-        // for(i = 0; i < 4; i++) {
-        //     for(j = 0; j < 4; j++) {
-        //         if($scope.positions[i][j] == null) {
-        //             $scope.positions[i][j] = randomNumTwoOrFour()
-        //             return;
-        //         } else {
-        //             generateNumberOnEmptyPosition();
-        //         }
+        return randomPosition;
+    }
 
-        //     }
-        // }
+    const generateNumberOnEmptyPosition = () => {
+        const randomPosition = randomNumberPosition();
+
+        if($scope.positions[randomPosition[0]][randomPosition[1]] == null) {
+            $scope.positions[randomPosition[0]][randomPosition[1]] = 2;
+            return;
+        } else {
+            generateNumberOnEmptyPosition();
+        }
+        
     }
 })
