@@ -1,7 +1,7 @@
 const app2048 = angular.module('app2048', []);
 
 app2048.controller('appController', function appController($scope) {
-    $scope.gameInProgress = false; //TODO improve the state management
+    $scope.gameInProgress = false;
 
     $scope.positions = [
         {0: null, 1: null, 2: null, 3: null},
@@ -18,11 +18,19 @@ app2048.controller('appController', function appController($scope) {
     }
 
     $scope.userClick = (key) => {
-        const arrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+        const arrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
-        if($scope.gameInProgress && arrows.includes(key)) {
+        if($scope.gameInProgress && arrows.includes(key) && availabilityObserver()) {
             generateNumberOnEmptyPosition();
+            moveItems(key);
         }
+    }
+
+    const moveItems = (key) => {
+        /*
+        mover todos os itens para a posição final daquela direção no objeto [nesse caso direita]
+        sempre vai rodar um loop, a cada vez que o valor encontrar seu semelhante  ele se multiplica por 2 e a posição em que o clicado estava é limpa
+        */
     }
 
     $scope.itemColor = (item) => {
@@ -46,6 +54,20 @@ app2048.controller('appController', function appController($scope) {
             case 256:position
                 return 'purple-item';
         }
+    }
+
+    const availabilityObserver = () => {
+        let allPositions = [];
+        for (i = 0; i < $scope.positions.length; i++) {
+            for (j = 0; j < $scope.positions.length; j++) {
+                allPositions.push($scope.positions[i][j])
+            }
+        }
+        
+        if(!allPositions.includes(null)) {
+            return false;
+        }
+        return true;
     }
 
     const randomNum = (limit) => {
@@ -118,6 +140,11 @@ app2048.controller('appController', function appController($scope) {
     }
 
     const generateNumberOnEmptyPosition = () => {
+
+        if(!availabilityObserver()) {
+            return false;
+        }
+
         const randomPosition = randomNumberPosition();
 
         if($scope.positions[randomPosition[0]][randomPosition[1]] == null) {
@@ -126,6 +153,6 @@ app2048.controller('appController', function appController($scope) {
         } else {
             generateNumberOnEmptyPosition();
         }
-        
+
     }
 })
