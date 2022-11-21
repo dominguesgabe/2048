@@ -19,19 +19,44 @@ app2048.controller('appController', function appController($scope) {
 
     $scope.userClick = (key) => {
         const arrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+        
+        if(key === 'Enter' && !$scope.gameInProgress) {
+            $scope.startGame();
+        }
 
         if($scope.gameInProgress && arrows.includes(key) && availabilityObserver()) {
             generateNumberOnEmptyPosition();
-            moveItems(key);
+            if (key === 'ArrowRight') {
+                moveItemsRight();
+            }
         }
     }
 
-    const moveItems = (key) => {
-        /*
-        mover todos os itens para a posição final daquela direção no objeto [nesse caso direita]
-        sempre vai rodar um loop, a cada vez que o valor encontrar seu semelhante  ele se multiplica por 2 e a posição em que o clicado estava é limpa
-        */
+    const moveItemsRight = () => {
+
+       for (i = 0; i < $scope.positions.length; i++) {
+            for (j = 0; j < $scope.positions.length; j++) {
+                if (typeof($scope.positions[i][j]) === 'number') {
+                    let currentLoopPos = [i, j];
+
+                    for (row = 0; row < $scope.positions.length; row++) {
+                        for (col = 0; col < $scope.positions.length; col++) {
+                            let secondLoopPos = [row, col];
+
+                            if (arrayToPositionValue(currentLoopPos) === arrayToPositionValue(secondLoopPos) && col > j && arrayToPositionValue(currentLoopPos)) {
+                                $scope.positions[row][col] = arrayToPositionValue(currentLoopPos) * 2; //números de diferentes linhas estão sendo somados, arrumar isso
+                                $scope.positions[i][j] = null;
+                                // break;
+                            }
+                        }
+                    }
+
+                }
+            }
+       }
+        
     }
+
 
     $scope.itemColor = (item) => {
         switch (item) {
@@ -51,7 +76,7 @@ app2048.controller('appController', function appController($scope) {
                 return 'green-item';
 
             case 16:
-            case 256:position
+            case 256:
                 return 'purple-item';
         }
     }
@@ -60,7 +85,7 @@ app2048.controller('appController', function appController($scope) {
         let allPositions = [];
         for (i = 0; i < $scope.positions.length; i++) {
             for (j = 0; j < $scope.positions.length; j++) {
-                allPositions.push($scope.positions[i][j])
+                allPositions.push($scope.positions[i][j]);
             }
         }
         
@@ -85,7 +110,7 @@ app2048.controller('appController', function appController($scope) {
         let randomNumberOfPosition = randomNum(16);
         let randomPosition = [];
 
-        switch (randomNumberOfPosition) {
+        switch (randomNumberOfPosition) { //unidimensional positions
             case 0:
                 randomPosition = [0,0];
                 break;
@@ -154,5 +179,9 @@ app2048.controller('appController', function appController($scope) {
             generateNumberOnEmptyPosition();
         }
 
+    }
+
+    const arrayToPositionValue = (array) => {
+        return $scope.positions[array[0]][array[1]];
     }
 })
