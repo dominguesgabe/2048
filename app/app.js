@@ -4,16 +4,16 @@ app2048.controller('appController', function appController($scope) {
     $scope.gameInProgress = false;
 
     $scope.positions = [
+        {0: null, 1: 2, 2: null, 3: 2},
         {0: null, 1: null, 2: null, 3: null},
-        {0: null, 1: null, 2: null, 3: null},
-        {0: null, 1: null, 2: null, 3: null},
+        {0: 2, 1: null, 2: 2, 3: null},
         {0: null, 1: null, 2: null, 3: null}
     ];
 
     $scope.startGame = () => {
-        for(i = 0; i < 2; i++) {
-            $scope.positions[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
-        }
+        // for(i = 0; i < 2; i++) {
+        //     $scope.positions[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
+        // }
         $scope.gameInProgress = true;
     }
 
@@ -25,7 +25,7 @@ app2048.controller('appController', function appController($scope) {
         }
 
         if($scope.gameInProgress && arrows.includes(key) && availabilityObserver()) {
-            generateNumberOnEmptyPosition();
+            // generateNumberOnEmptyPosition();
             if (key === 'ArrowRight') {
                 moveItemsRight();
             }
@@ -33,30 +33,42 @@ app2048.controller('appController', function appController($scope) {
     }
 
     const moveItemsRight = () => {
+        let populatedPos = populatedPos($scope.positions);
+    }
 
-       for (i = 0; i < $scope.positions.length; i++) {
-            for (j = 0; j < $scope.positions.length; j++) {
-                if (typeof($scope.positions[i][j]) === 'number') {
-                    let currentLoopPos = [i, j];
+    const populatedPos = (positions) => {
+        const length = $scope.positions.length;
+        const numbersAt = [];
+        
+        for (i = 0; i < length; i++) { //loop pra ler e loop pra somar, isso está certo?
+            for (j = 0; j < length; j++) {
+                if (typeof(positions[i][j]) === 'number') {
 
-                    for (row = 0; row < $scope.positions.length; row++) {
-                        for (col = 0; col < $scope.positions.length; col++) {
-                            let secondLoopPos = [row, col];
+                    numbersAt.push([i, j]);
 
-                            if (arrayToPositionValue(currentLoopPos) === arrayToPositionValue(secondLoopPos) && col > j && arrayToPositionValue(currentLoopPos)) {
-                                $scope.positions[row][col] = arrayToPositionValue(currentLoopPos) * 2; //números de diferentes linhas estão sendo somados, arrumar isso
-                                $scope.positions[i][j] = null;
-                                // break;
-                            }
-                        }
-                    }
+                    // for (row = 0; row < length; row++) {
+                    //     for (col = 0; col < length; col++) {
+                    //         let secondLoopPos = [row, col];
+
+                    //         if (arrayToPositionValue(currentLoopPos) === arrayToPositionValue(secondLoopPos) && col > j && arrayToPositionValue(currentLoopPos)) {
+                    //             $scope.positions[row][col] = arrayToPositionValue(currentLoopPos) * 2; //números de diferentes linhas estão sendo somados, arrumar isso, parece que está propagando mais do que devia
+                    //             $scope.positions[i][j] = null;
+                    //             console.log(theresNumbersAt)
+                    //             if(row == 3 || col == 3) {
+                    //                 break;
+                    //             }
+                    //         }
+                    //     }
+                    // }
 
                 }
             }
-       }
-        
+        }
+        return numbersAt;
     }
 
+
+    
 
     $scope.itemColor = (item) => {
         switch (item) {
