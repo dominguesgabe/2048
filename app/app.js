@@ -1,14 +1,20 @@
 const app2048 = angular.module('app2048', []);
 
 app2048.controller('appController', function appController($scope) {
+    
     $scope.gameInProgress = false;
-
     $scope.positions = [
         {0: null, 1: 2, 2: null, 3: 2},
         {0: null, 1: null, 2: null, 3: null},
         {0: 2, 1: null, 2: 2, 3: null},
         {0: null, 1: null, 2: null, 3: null}
     ];
+    // $scope.positions = {
+    //     0: null, 1: null, 2: null, 3: null, 4: null,
+    //     5: null, 6: null, 7: null, 8: null, 9: null,
+    //     10: null, 11: null, 12: null, 13: null, 14: null, 15: null
+    // }
+    const posLength = $scope.positions.length;
 
     $scope.startGame = () => {
         // for(i = 0; i < 2; i++) {
@@ -33,37 +39,31 @@ app2048.controller('appController', function appController($scope) {
     }
 
     const moveItemsRight = () => {
-        let populatedPos = populatedPos($scope.positions);
-    }
-
-    const populatedPos = (positions) => {
-        const length = $scope.positions.length;
-        const numbersAt = [];
+        let populatedPos = numbersAt($scope.positions);
         
-        for (i = 0; i < length; i++) { //loop pra ler e loop pra somar, isso está certo?
-            for (j = 0; j < length; j++) {
-                if (typeof(positions[i][j]) === 'number') {
+        for (x = 0; x < posLength; x++) {
+            for (y = 0; y < posLength; y++) { //eu quero comparar a posição e não o valor, quando a posição for igual aí eu penso no que fazer com o valo
 
-                    numbersAt.push([i, j]);
+                console.log([[x,y]][0] === populatedPos[x]);
 
-                    // for (row = 0; row < length; row++) {
-                    //     for (col = 0; col < length; col++) {
-                    //         let secondLoopPos = [row, col];
-
-                    //         if (arrayToPositionValue(currentLoopPos) === arrayToPositionValue(secondLoopPos) && col > j && arrayToPositionValue(currentLoopPos)) {
-                    //             $scope.positions[row][col] = arrayToPositionValue(currentLoopPos) * 2; //números de diferentes linhas estão sendo somados, arrumar isso, parece que está propagando mais do que devia
-                    //             $scope.positions[i][j] = null;
-                    //             console.log(theresNumbersAt)
-                    //             if(row == 3 || col == 3) {
-                    //                 break;
-                    //             }
-                    //         }
-                    //     }
-                    // }
-
+                if ([x, y][0] === populatedPos[x]) {
+                    console.log('entrou')
                 }
             }
         }
+    }
+
+     const numbersAt = (positions) => {
+        const numbersAt = [];
+        
+        for (x = 0; x < posLength; x++) {
+            for (y = 0; y < posLength; y++) {
+                if (typeof(positions[x][y]) === 'number') {
+                    numbersAt.push([x, y]);
+                }
+            }
+        }
+
         return numbersAt;
     }
 

@@ -8,7 +8,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
     </head>
     <body ng-controller="appController" ng-keyup="userClick($event.key)">
-        <h1>2048</h1>{{positions}}
+        <h1>2048</h1>
         <table class="grid-container" ng-model="positions">
             <tr ng-repeat="position in positions" class="grid-row">
                 <td ng-repeat="item in position" class="grid-item" ng-class="itemColor(item)">
