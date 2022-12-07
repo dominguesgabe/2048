@@ -4,16 +4,12 @@ app2048.controller('appController', function appController($scope) {
     
     $scope.gameInProgress = false;
     $scope.positions = [
-        {0: null, 1: 2, 2: null, 3: 2},
-        {0: null, 1: null, 2: null, 3: null},
-        {0: 2, 1: null, 2: 2, 3: null},
-        {0: null, 1: null, 2: null, 3: null}
+        {0: null, 1: 2, 2: 2, 3: 2},
+        {0: 2, 1: 2, 2: null, 3: null},
+        {0: 2, 1: null, 2: null, 3: 2},
+        {0: 64, 1: null, 2: 2, 3: 8}
     ];
-    // $scope.positions = {
-    //     0: null, 1: null, 2: null, 3: null, 4: null,
-    //     5: null, 6: null, 7: null, 8: null, 9: null,
-    //     10: null, 11: null, 12: null, 13: null, 14: null, 15: null
-    // }
+    const positions = [...$scope.positions];
     const posLength = $scope.positions.length;
 
     $scope.startGame = () => {
@@ -26,48 +22,76 @@ app2048.controller('appController', function appController($scope) {
     $scope.userClick = (key) => {
         const arrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
         
-        if(key === 'Enter' && !$scope.gameInProgress) {
+        if (key === 'Enter' && !$scope.gameInProgress) {
             $scope.startGame();
         }
 
         if($scope.gameInProgress && arrows.includes(key) && availabilityObserver()) {
             // generateNumberOnEmptyPosition();
-            if (key === 'ArrowRight') {
-                moveItemsRight();
+            switch(key) {
+                case 'ArrowUp':
+                    moveItemsRight();
+                case 'ArrowDown':
+                    moveItemsRight();
+                case 'ArrowLeft':
+                    moveItemsRight();
+                case 'ArrowRight':
+                    moveItemsRight();
             }
-        }
+        }   
     }
 
     const moveItemsRight = () => {
-        let populatedPos = numbersAt($scope.positions);
+        let neverEnteredRow = true;
+        const rowsWithEqualValues = [];
+        // let rowEqualValues;
         
-        for (x = 0; x < posLength; x++) {
-            for (y = 0; y < posLength; y++) { //eu quero comparar a posição e não o valor, quando a posição for igual aí eu penso no que fazer com o valo
+        for (let row = 0; row < posLength; row++) {
+            for (let col = 0; col < posLength; col++) {
+                
+                if ($scope.positions[row][col] && neverEnteredRow) {
+                    rowsWithEqualValues.push(verifySameValueInRow(row, $scope.positions[row][col]));
 
-                console.log([[x,y]][0] === populatedPos[x]);
-
-                if ([x, y][0] === populatedPos[x]) {
-                    console.log('entrou')
+                    neverEnteredRow = false;
                 }
+                
             }
+            neverEnteredRow = true;
+        }
+        sumIfPossible('right', rowsWithEqualValues);
+    }
+
+    const verifySameValueInRow = (row, positionValue) => {
+        let rowsWithEqualValues = [];
+
+        for (let i = 0; i < posLength; i++) {
+            if (celValue([row, i]) === positionValue) {
+                rowsWithEqualValues.push(i);
+            }
+        }
+        return rowsWithEqualValues;
+    }
+
+    const celValue = ([row, col]) => {
+        return $scope.positions[row][col];
+    }
+
+    const sumIfPossible = (key, rowsWithEqualValues) => {
+        switch(key) {
+            case 'up':
+                sumUp(rowsWithEqualValues);
+            case 'down':
+                sumDown(rowsWithEqualValues);
+            case 'left':
+                sumLeft(rowsWithEqualValues);
+            case 'right':
+                sumRight(rowsWithEqualValues);
         }
     }
 
-     const numbersAt = (positions) => {
-        const numbersAt = [];
-        
-        for (x = 0; x < posLength; x++) {
-            for (y = 0; y < posLength; y++) {
-                if (typeof(positions[x][y]) === 'number') {
-                    numbersAt.push([x, y]);
-                }
-            }
-        }
+    const sumRight = (rowsWithEqualValues) => {
 
-        return numbersAt;
     }
-
-
     
 
     $scope.itemColor = (item) => {
@@ -191,9 +215,5 @@ app2048.controller('appController', function appController($scope) {
             generateNumberOnEmptyPosition();
         }
 
-    }
-
-    const arrayToPositionValue = (array) => {
-        return $scope.positions[array[0]][array[1]];
     }
 })
