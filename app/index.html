@@ -9,7 +9,7 @@
     </head>
     <body ng-controller="appController" ng-keyup="userClick($event.key)">
         <h1>2048</h1>
-        <table class="grid-container" ng-model="positions">
+        <table class="grid-container">
             <tr ng-repeat="position in positions" class="grid-row">
                 <td ng-repeat="item in position" class="grid-item" ng-class="itemColor(item)">
                     {{ item }}

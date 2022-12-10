@@ -44,13 +44,14 @@ app2048.controller('appController', function appController($scope) {
     const moveItemsRight = () => {
         let neverEnteredRow = true;
         const rowsWithEqualValues = [];
-        // let rowEqualValues;
         
         for (let row = 0; row < posLength; row++) {
             for (let col = 0; col < posLength; col++) {
                 
-                if ($scope.positions[row][col] && neverEnteredRow) {
-                    rowsWithEqualValues.push(verifySameValueInRow(row, $scope.positions[row][col]));
+                if (celValue([row,col]) && neverEnteredRow) {
+                    const rowValues = verifySameValueInRow(row, celValue([row, col]));
+                    
+                    rowsWithEqualValues.push(rowValues)
 
                     neverEnteredRow = false;
                 }
@@ -62,13 +63,18 @@ app2048.controller('appController', function appController($scope) {
     }
 
     const verifySameValueInRow = (row, positionValue) => {
-        let rowsWithEqualValues = [];
+        const rowsWithEqualValues = [];
 
         for (let i = 0; i < posLength; i++) {
             if (celValue([row, i]) === positionValue) {
                 rowsWithEqualValues.push(i);
             }
         }
+
+        if (rowsWithEqualValues.length < 2) {
+            rowsWithEqualValues.pop();
+        }
+        
         return rowsWithEqualValues;
     }
 
@@ -90,7 +96,11 @@ app2048.controller('appController', function appController($scope) {
     }
 
     const sumRight = (rowsWithEqualValues) => {
-
+        for (let i = 0; i < posLength; i++) {
+            for (let j = 0; j < posLength; j++) {
+                console.log(celValue([i, j])) //todo parei aqui
+            }
+        }
     }
     
 
