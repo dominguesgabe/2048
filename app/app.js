@@ -3,20 +3,20 @@ const app2048 = angular.module('app2048', []);
 app2048.controller('appController', function appController($scope) {
     
     $scope.gameInProgress = false;
-    $scope.positions = [
-        {0: null, 1: 2, 2: 2, 3: 2},
-        {0: 2, 1: 2, 2: null, 3: null},
-        {0: 2, 1: null, 2: null, 3: 2},
-        {0: 64, 1: null, 2: 2, 3: 8}
+    $scope.positionsDOM = [
+        {0: 2, 1: 2, 2: 4, 3: 4}, //todo arrumar essa regra
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: null}
     ];
-    const positions = [...$scope.positions];
-    const posLength = $scope.positions.length;
+    let positions;
 
     $scope.startGame = () => {
         // for(i = 0; i < 2; i++) {
         //     $scope.positions[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
         // }
         $scope.gameInProgress = true;
+        positions = JSON.parse(angular.toJson($scope.positionsDOM));
     }
 
     $scope.userClick = (key) => {
@@ -27,14 +27,13 @@ app2048.controller('appController', function appController($scope) {
         }
 
         if($scope.gameInProgress && arrows.includes(key) && availabilityObserver()) {
-            // generateNumberOnEmptyPosition();
             switch(key) {
                 case 'ArrowUp':
-                    moveItemsRight();
+                    // moveItemsRight();
                 case 'ArrowDown':
-                    moveItemsRight();
+                    // moveItemsRight();
                 case 'ArrowLeft':
-                    moveItemsRight();
+                    // moveItemsRight();
                 case 'ArrowRight':
                     moveItemsRight();
             }
@@ -42,32 +41,64 @@ app2048.controller('appController', function appController($scope) {
     }
 
     const moveItemsRight = () => {
-        let neverEnteredRow = true;
-        const rowsWithEqualValues = [];
-        
-        for (let row = 0; row < posLength; row++) {
-            for (let col = 0; col < posLength; col++) {
-                
-                if (celValue([row,col]) && neverEnteredRow) {
-                    const rowValues = verifySameValueInRow(row, celValue([row, col]));
-                    
-                    rowsWithEqualValues.push(rowValues)
-
-                    neverEnteredRow = false;
+        for (let j = 3; j >= 0; j--) {
+            if (positions[0][j]) {
+                if(positions[0][j] == positions[0][j - 1]) { //todo criar um checker automático como o farthestIndex
+                    positions[0][j] = positions[0][j] * 2;
+                    positions[0][j - 1] = null;
+                } else if (positions[0][j] == positions[0][j - 2] && !positions[0][j - 1]) {
+                    positions[0][j] = positions[0][j] * 2;
+                    positions[0][j - 2] = null;
+                } else if (positions[0][j] == positions[0][j - 3] && !positions[0][j - 1]) {
+                    positions[0][j] = positions[0][j] * 2;
+                    positions[0][j - 3] = null;
                 }
-                
             }
-            neverEnteredRow = true;
         }
-        sumIfPossible('right', rowsWithEqualValues);
+
+        checkMoveRightNoSum();
+        $scope.positionsDOM = positions;
+        // generateNumberOnEmptyPosition();
+    }
+
+    const checkMoveRightNoSum = () => {
+        let cornerNearest;
+        for (let j = 3; j >= 0; j--) {
+            if (positions[0][j] && positions[0][j + 3] === null) { //loop que move os valores restantes para próximo da parede 
+                cornerNearest = j + 3;
+
+            } else if (positions[0][j] && positions[0][j + 2] === null) {
+                cornerNearest = j + 2;
+
+            } else  if (positions[0][j] && positions[0][j + 1] === null) {
+                cornerNearest = j + 1;
+            }
+            
+            if (cornerNearest) {
+                positions[0][j + cornerNearest] = positions[0][j];
+                positions[0][j] = null;
+            }
+        }
+    }
+
+    const farthestIndex = (actualIndex) => {
+        let farthestIndex;
+
+        for (let i = actualIndex; i < 4; i++) {
+            if (!positions[0][i]) {
+                farthestIndex = i;
+            }
+        }
+        console.log(farthestIndex)
+        return farthestIndex;
     }
 
     const verifySameValueInRow = (row, positionValue) => {
-        const rowsWithEqualValues = [];
+        const rowsWithEqualValues = {};
 
-        for (let i = 0; i < posLength; i++) {
+        for (let i = 0; i < 4; i++) {
             if (celValue([row, i]) === positionValue) {
-                rowsWithEqualValues.push(i);
+                rowsWithEqualValues[row] = i;
             }
         }
 
@@ -82,7 +113,7 @@ app2048.controller('appController', function appController($scope) {
         return $scope.positions[row][col];
     }
 
-    const sumIfPossible = (key, rowsWithEqualValues) => {
+    const sumDirection = (key, rowsWithEqualValues) => {
         switch(key) {
             case 'up':
                 sumUp(rowsWithEqualValues);
@@ -91,25 +122,16 @@ app2048.controller('appController', function appController($scope) {
             case 'left':
                 sumLeft(rowsWithEqualValues);
             case 'right':
-                sumRight(rowsWithEqualValues);
+                sumRight();
         }
     }
-
-    const sumRight = (rowsWithEqualValues) => {
-        for (let i = 0; i < posLength; i++) {
-            for (let j = 0; j < posLength; j++) {
-                console.log(celValue([i, j])) //todo parei aqui
-            }
-        }
-    }
-    
 
     $scope.itemColor = (item) => {
         switch (item) {
             case 2:
             case 32:
             case 512:
-                return 'orange-item';
+                return 'purple-item';
 
             case 4:
             case 64:
@@ -119,19 +141,19 @@ app2048.controller('appController', function appController($scope) {
             case 8:
             case 128:
             case 2048:
-                return 'green-item';
+                return 'orange-item';
 
             case 16:
             case 256:
-                return 'purple-item';
+                return 'green-item';
         }
     }
 
     const availabilityObserver = () => {
         let allPositions = [];
-        for (i = 0; i < $scope.positions.length; i++) {
-            for (j = 0; j < $scope.positions.length; j++) {
-                allPositions.push($scope.positions[i][j]);
+        for (i = 0; i < $scope.positionsDOM.length; i++) {
+            for (j = 0; j < $scope.positionsDOM.length; j++) {
+                allPositions.push($scope.positionsDOM[i][j]);
             }
         }
         
@@ -218,12 +240,18 @@ app2048.controller('appController', function appController($scope) {
 
         const randomPosition = randomNumberPosition();
 
-        if($scope.positions[randomPosition[0]][randomPosition[1]] == null) {
-            $scope.positions[randomPosition[0]][randomPosition[1]] = 2;
+        if($scope.positionsDOM[randomPosition[0]][randomPosition[1]] == null) {
+            $scope.positionsDOM[randomPosition[0]][randomPosition[1]] = 2;
             return;
         } else {
             generateNumberOnEmptyPosition();
         }
 
+    }
+
+    const generateNumOnEmptyPosition = () => {
+        for(i = 0; i < 2; i++) {
+            positions[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
+        }
     }
 })
