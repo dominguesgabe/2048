@@ -4,7 +4,7 @@ app2048.controller('appController', function appController($scope) {
     
     $scope.gameInProgress = false;
     $scope.positionsDOM = [
-        {0: 2, 1: 2, 2: 4, 3: 4}, //todo arrumar essa regra
+        {0: 2, 1: 4, 2: 2, 3: 2}, //todo arrumar essa regra
         {0: null, 1: null, 2: null, 3: null},
         {0: null, 1: null, 2: null, 3: null},
         {0: null, 1: null, 2: null, 3: null}
@@ -43,7 +43,7 @@ app2048.controller('appController', function appController($scope) {
     const moveItemsRight = () => {
         for (let j = 3; j >= 0; j--) {
             if (positions[0][j]) {
-                if(positions[0][j] == positions[0][j - 1]) { //todo criar um checker automático como o farthestIndex
+                if(positions[0][j] == positions[0][j - 1]) { //todo criar um checker automático como o farthestIndex para caso tenha um valor na mesma linha e nenhuma parede os dois somarem no index atual
                     positions[0][j] = positions[0][j] * 2;
                     positions[0][j - 1] = null;
                 } else if (positions[0][j] == positions[0][j - 2] && !positions[0][j - 1]) {
@@ -53,13 +53,29 @@ app2048.controller('appController', function appController($scope) {
                     positions[0][j] = positions[0][j] * 2;
                     positions[0][j - 3] = null;
                 }
+                checkMoveRighSum(j);
             }
+            // farthestIndex(j);
         }
+        //chamar farthestIndex
 
-        checkMoveRightNoSum();
+        // checkMoveRightNoSum();
         $scope.positionsDOM = positions;
         // generateNumberOnEmptyPosition();
     }
+
+    const checkMoveRighSum = (actualIndex) => {
+        let nearestAvailableSum;
+
+        for (let i = actualIndex; i >= 0; i--) {
+            if (positions[0][i] && i < actualIndex && !positions[0][i + 1]) {
+                nearestAvailableSum = i;
+            }
+        }
+
+        return nearestAvailableSum;
+    }
+
 
     const checkMoveRightNoSum = () => {
         let cornerNearest;
@@ -89,7 +105,7 @@ app2048.controller('appController', function appController($scope) {
                 farthestIndex = i;
             }
         }
-        console.log(farthestIndex)
+
         return farthestIndex;
     }
 
