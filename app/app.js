@@ -4,7 +4,7 @@ app2048.controller('appController', function appController($scope) {
     
     $scope.gameInProgress = false;
     $scope.positionsDOM = [
-        {0: 2, 1: 4, 2: 2, 3: 2}, //todo arrumar essa regra
+        {0: null, 1: 2, 2: null, 3: 4},
         {0: null, 1: null, 2: null, 3: null},
         {0: null, 1: null, 2: null, 3: null},
         {0: null, 1: null, 2: null, 3: null}
@@ -29,11 +29,11 @@ app2048.controller('appController', function appController($scope) {
         if($scope.gameInProgress && arrows.includes(key) && availabilityObserver()) {
             switch(key) {
                 case 'ArrowUp':
-                    // moveItemsRight();
+                    // moveItemsUp();
                 case 'ArrowDown':
-                    // moveItemsRight();
+                    // moveItemsDown();
                 case 'ArrowLeft':
-                    // moveItemsRight();
+                    // moveItemsLeft();
                 case 'ArrowRight':
                     moveItemsRight();
             }
@@ -43,102 +43,66 @@ app2048.controller('appController', function appController($scope) {
     const moveItemsRight = () => {
         for (let j = 3; j >= 0; j--) {
             if (positions[0][j]) {
-                if(positions[0][j] == positions[0][j - 1]) { //todo criar um checker automático como o farthestIndex para caso tenha um valor na mesma linha e nenhuma parede os dois somarem no index atual
-                    positions[0][j] = positions[0][j] * 2;
-                    positions[0][j - 1] = null;
-                } else if (positions[0][j] == positions[0][j - 2] && !positions[0][j - 1]) {
-                    positions[0][j] = positions[0][j] * 2;
-                    positions[0][j - 2] = null;
-                } else if (positions[0][j] == positions[0][j - 3] && !positions[0][j - 1]) {
-                    positions[0][j] = positions[0][j] * 2;
-                    positions[0][j - 3] = null;
-                }
-                checkMoveRighSum(j);
+                rightSum(j);
+                rightMove(j);
             }
-            // farthestIndex(j);
         }
-        //chamar farthestIndex
 
-        // checkMoveRightNoSum();
         $scope.positionsDOM = positions;
         // generateNumberOnEmptyPosition();
     }
 
-    const checkMoveRighSum = (actualIndex) => {
-        let nearestAvailableSum;
+    const rightSum = (actualIndex) => {
+        for (let j = actualIndex; j >= 0; j--) {
+            if (j < actualIndex && positions[0][j] && (j + 1) < 4 && positions[0][actualIndex] === positions[0][j]) { //verifica se existe o mesmo valor na linha
+                let isPossibleSumFar;
 
-        for (let i = actualIndex; i >= 0; i--) {
-            if (positions[0][i] && i < actualIndex && !positions[0][i + 1]) {
-                nearestAvailableSum = i;
+                for (let counter = j + 1; counter < actualIndex; counter++) {
+                    if (positions[0][counter]) {
+                        break;
+                    }
+                    
+                    isPossibleSumFar = true;
+                }
+
+                if (isPossibleSumFar) {
+                    positions[0][actualIndex] = positions[0][actualIndex] * 2;
+                    positions[0][j] = null;
+                    break;
+                } else if (positions[0][j] === positions[0][j + 1] && (j + 1) < 4) {
+                    positions[0][actualIndex] = positions[0][actualIndex] * 2;
+                    positions[0][j] = null;
+                    break;
+                }
             }
         }
-
-        return nearestAvailableSum;
     }
 
+    const rightMove = (actualIndex) => {
+        // let cornerNearest;
+        // for (let j = 3; j >= 0; j--) {
+        //     if (positions[0][j] && positions[0][j + 3] === null) { //loop que move os valores restantes para próximo da parede 
+        //         cornerNearest = j + 3;
 
-    const checkMoveRightNoSum = () => {
-        let cornerNearest;
-        for (let j = 3; j >= 0; j--) {
-            if (positions[0][j] && positions[0][j + 3] === null) { //loop que move os valores restantes para próximo da parede 
-                cornerNearest = j + 3;
+        //     } else if (positions[0][j] && positions[0][j + 2] === null) {
+        //         cornerNearest = j + 2;
 
-            } else if (positions[0][j] && positions[0][j + 2] === null) {
-                cornerNearest = j + 2;
-
-            } else  if (positions[0][j] && positions[0][j + 1] === null) {
-                cornerNearest = j + 1;
-            }
+        //     } else  if (positions[0][j] && positions[0][j + 1] === null) {
+        //         cornerNearest = j + 1;
+        //     }
             
-            if (cornerNearest) {
-                positions[0][j + cornerNearest] = positions[0][j];
-                positions[0][j] = null;
-            }
-        }
-    }
+        //     if (cornerNearest) {
+        //         positions[0][j + cornerNearest] = positions[0][j];
+        //         positions[0][j] = null;
+        //     }
+        // }
 
-    const farthestIndex = (actualIndex) => {
         let farthestIndex;
 
         for (let i = actualIndex; i < 4; i++) {
             if (!positions[0][i]) {
                 farthestIndex = i;
             }
-        }
-
-        return farthestIndex;
-    }
-
-    const verifySameValueInRow = (row, positionValue) => {
-        const rowsWithEqualValues = {};
-
-        for (let i = 0; i < 4; i++) {
-            if (celValue([row, i]) === positionValue) {
-                rowsWithEqualValues[row] = i;
-            }
-        }
-
-        if (rowsWithEqualValues.length < 2) {
-            rowsWithEqualValues.pop();
-        }
-        
-        return rowsWithEqualValues;
-    }
-
-    const celValue = ([row, col]) => {
-        return $scope.positions[row][col];
-    }
-
-    const sumDirection = (key, rowsWithEqualValues) => {
-        switch(key) {
-            case 'up':
-                sumUp(rowsWithEqualValues);
-            case 'down':
-                sumDown(rowsWithEqualValues);
-            case 'left':
-                sumLeft(rowsWithEqualValues);
-            case 'right':
-                sumRight();
         }
     }
 
