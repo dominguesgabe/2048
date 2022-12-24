@@ -54,7 +54,7 @@ app2048.controller('appController', function appController($scope) {
 
     const rightSum = (actualIndex) => {
         for (let j = actualIndex; j >= 0; j--) {
-            if (j < actualIndex && positions[0][j] && (j + 1) < 4 && positions[0][actualIndex] === positions[0][j]) { //verifica se existe o mesmo valor na linha
+            if (j < actualIndex && positions[0][j] && (j + 1) < 4 && positions[0][actualIndex] === positions[0][j]) {
                 let isPossibleSumFar;
 
                 for (let counter = j + 1; counter < actualIndex; counter++) {
@@ -79,30 +79,19 @@ app2048.controller('appController', function appController($scope) {
     }
 
     const rightMove = (actualIndex) => {
-        // let cornerNearest;
-        // for (let j = 3; j >= 0; j--) {
-        //     if (positions[0][j] && positions[0][j + 3] === null) { //loop que move os valores restantes para próximo da parede 
-        //         cornerNearest = j + 3;
+        let availableCornerNearest;
 
-        //     } else if (positions[0][j] && positions[0][j + 2] === null) {
-        //         cornerNearest = j + 2;
+        for (let i = actualIndex + 1; i < 4; i++) {
 
-        //     } else  if (positions[0][j] && positions[0][j + 1] === null) {
-        //         cornerNearest = j + 1;
-        //     }
-            
-        //     if (cornerNearest) {
-        //         positions[0][j + cornerNearest] = positions[0][j];
-        //         positions[0][j] = null;
-        //     }
-        // }
-
-        let farthestIndex;
-
-        for (let i = actualIndex; i < 4; i++) {
-            if (!positions[0][i]) {
-                farthestIndex = i;
+            if (positions[0][i]) {
+                continue;
             }
+            availableCornerNearest = i;
+        }
+
+        if (availableCornerNearest) {
+            positions[0][availableCornerNearest] = positions[0][actualIndex];
+            positions[0][actualIndex] = null; 
         }
     }
 
@@ -154,11 +143,11 @@ app2048.controller('appController', function appController($scope) {
         return numberArray[random];
     }
 
-    const randomNumberPosition = () => {
+    const randomNumberPosition = () => { //todo refazer
         let randomNumberOfPosition = randomNum(16);
         let randomPosition = [];
 
-        switch (randomNumberOfPosition) { //unidimensional positions
+        switch (randomNumberOfPosition) {
             case 0:
                 randomPosition = [0,0];
                 break;
