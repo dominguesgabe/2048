@@ -29,36 +29,59 @@ app2048.controller('appController', function appController($scope) {
         if($scope.gameInProgress && arrows.includes(key) && availabilityObserver()) {
             switch(key) {
                 case 'ArrowUp':
-                    // moveItemsUp();
+                    moveItemsUp();
+                    break;
                 case 'ArrowDown':
-                    // moveItemsDown();
+                    moveItemsDown();
+                    break;
                 case 'ArrowLeft':
-                    // moveItemsLeft();
+                    moveItemsLeft();
+                    break;
                 case 'ArrowRight':
                     moveItemsRight();
+                    break;
             }
+
+        // generateNumberOnEmptyPosition();
         }   
     }
 
-    const moveItemsRight = () => {
-        for (let j = 3; j >= 0; j--) {
-            if (positions[0][j]) {
-                rightSum(j);
-                rightMove(j);
+    const moveItemsLeft = () => {
+        
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+                if (positions[i][j]) {
+                    leftSum(i, j);
+                    leftMove(i, j);
+                }
             }
         }
 
         $scope.positionsDOM = positions;
-        // generateNumberOnEmptyPosition();
     }
 
-    const rightSum = (actualIndex) => {
-        for (let j = actualIndex; j >= 0; j--) {
-            if (j < actualIndex && positions[0][j] && (j + 1) < 4 && positions[0][actualIndex] === positions[0][j]) {
-                let isPossibleSumFar;
+    const moveItemsRight = () => {
+        
+        for (let i = 3; i >= 0; i--) {
+            for (let j = 3; j >= 0; j--) {
+                if (positions[i][j]) {
+                    rightSum(i, j);
+                    rightMove(i, j);
+                }
+            }
+        }
 
-                for (let counter = j + 1; counter < actualIndex; counter++) {
-                    if (positions[0][counter]) {
+        $scope.positionsDOM = positions;
+    }
+
+    const leftSum = (actualRow, actualIndex) => {
+        for (let lineLoop = actualIndex + 1; lineLoop < 4; lineLoop++) {
+            
+            if (positions[actualRow][lineLoop] && positions[actualRow][actualIndex] === positions[actualRow][lineLoop]) {
+                let isPossibleSumFar;
+                
+                for (let counter = lineLoop - 1; counter > 0; counter--) {
+                    if (positions[actualRow][counter]) {
                         break;
                     }
                     
@@ -66,32 +89,75 @@ app2048.controller('appController', function appController($scope) {
                 }
 
                 if (isPossibleSumFar) {
-                    positions[0][actualIndex] = positions[0][actualIndex] * 2;
-                    positions[0][j] = null;
+                    positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
+                    positions[actualRow][lineLoop] = null;
                     break;
-                } else if (positions[0][j] === positions[0][j + 1] && (j + 1) < 4) {
-                    positions[0][actualIndex] = positions[0][actualIndex] * 2;
-                    positions[0][j] = null;
+                } else if (positions[actualRow][actualIndex] === positions[actualRow][actualIndex + 1] && (actualIndex + 1) < 4) {
+                    positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
+                    positions[actualRow][actualIndex + 1] = null;
                     break;
                 }
             }
         }
     }
 
-    const rightMove = (actualIndex) => {
+    const leftMove = (actualRow, actualIndex) => {
         let availableCornerNearest;
 
-        for (let i = actualIndex + 1; i < 4; i++) {
-
-            if (positions[0][i]) {
+        for (let i = actualIndex - 1; i >= 0; i--) {
+            if (positions[actualRow][i]) {
                 continue;
             }
             availableCornerNearest = i;
         }
 
-        if (availableCornerNearest) {
-            positions[0][availableCornerNearest] = positions[0][actualIndex];
-            positions[0][actualIndex] = null; 
+        if (typeof(availableCornerNearest) === 'number') {
+            positions[actualRow][availableCornerNearest] = positions[actualRow][actualIndex];
+            positions[actualRow][actualIndex] = null; 
+        }
+    }
+
+    const rightSum = (actualRow, actualIndex) => {
+        for (let lineLoop = actualIndex; lineLoop >= 0; lineLoop--) {
+            
+            if (lineLoop < actualIndex && positions[actualRow][lineLoop] && (lineLoop + 1) < 4 && positions[actualRow][actualIndex] === positions[actualRow][lineLoop]) {
+                let isPossibleSumFar;
+                
+                for (let counter = lineLoop + 1; counter < actualIndex; counter++) {
+                    if (positions[actualRow][counter]) {
+                        break;
+                    }
+                    
+                    isPossibleSumFar = true;
+                }
+
+                if (isPossibleSumFar) {
+                    positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
+                    positions[actualRow][lineLoop] = null;
+                    break;
+                } else if (positions[actualRow][lineLoop] === positions[actualRow][lineLoop + 1] && (lineLoop + 1) < 4) {
+                    positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
+                    positions[actualRow][lineLoop] = null;
+                    break;
+                }
+            }
+        }
+    }
+
+    const rightMove = (actualRow, actualIndex) => {
+        let availableCornerNearest;
+
+        for (let i = actualIndex + 1; i < 4; i++) {
+
+            if (positions[actualRow][i]) {
+                continue;
+            }
+            availableCornerNearest = i;
+        }
+
+        if (typeof(availableCornerNearest) === 'number') {
+            positions[actualRow][availableCornerNearest] = positions[actualRow][actualIndex];
+            positions[actualRow][actualIndex] = null; 
         }
     }
 
