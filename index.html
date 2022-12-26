@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR" ng-app="app2048">
+    <head>
+        <meta charset="UTF-8">
+        <title>2048</title>
+        <link rel="stylesheet" href="./assets/style.css">
+        <link rel="stylesheet" href="./assets/reset.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+    </head>
+    <body ng-controller="appController" ng-keyup="userClick($event.key)">
+        <h1>2048</h1>
+        <table class="grid-container">
+            <tr ng-repeat="position in positionsDOM" class="grid-row">
+                <td ng-repeat="item in position" class="grid-item" ng-class="itemColor(item)">
+                    {{ item }}
+                </td>
+            </tr>
+        </table>
+        <div class="bottom-container">
+            <button class="start-btn" ng-click="startGame()" ng-disabled="gameInProgress">Começar!</button>
+        </div>
+        <script src="./app/app.js"></script>
+    </body>
+</html>
