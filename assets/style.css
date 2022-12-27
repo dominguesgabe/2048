@@ -3,14 +3,14 @@
     font-size: 1.1em;
 }
 body {
-    background-color: rgb(53, 53, 53);
+    background-color: rgb(14, 1, 37);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 }
 h1 {
-    font-size: 2em;
+    font-size: 2.5em;
 }
 
 .container {
@@ -34,6 +34,8 @@ h1 {
     background-color: rgb(61, 40, 134);
     border: 3px solid rgb(62, 14, 236);
     border-radius: 8px;
+    margin: 1.25em 0;
+    box-shadow: inset 0 0 1px #fff, inset -20px 0 300px rgb(64, 4, 116), 0 0 18px rgba(58, 9, 87, 0), -10px 0 58px rgb(104, 6, 150);
 }
 .grid-row {
     display: flex;
@@ -56,12 +58,12 @@ h1 {
     font-weight: bold;
     background-color: rgb(153, 153, 153);
     border: 3px solid rgb(196, 196, 196);
+    box-shadow: inset 0 0 1px  #fff;
 }
 .grid-item:not(:first-child) {
     margin-left: 20px;
 }
 .start-btn {
-    margin-top: 20px;
     width: 150px;
     height: 50px;
     background-color: rgb(240, 149, 29);
@@ -74,7 +76,7 @@ h1 {
     color: rgb(128, 61, 7);
 }
 .start-btn:disabled {
-    filter: grayscale(.8);
+    filter: grayscale(100%);
 }
 
 /*color classes*/

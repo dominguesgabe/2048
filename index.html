@@ -7,6 +7,10 @@
         <link rel="stylesheet" href="assets/reset.css">
         <link rel="icon" type="image/png" href="assets/favicon.png">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+        <script src="app/app.js"></script>
+        <script src="app/appController.js"></script>
+        <script src="app/positionsMovement.js"></script>
+        <script src="app/colorsService.js"></script>
     </head>
     <body ng-controller="appController" ng-keyup="userClick($event.key)">
         <h1>2048</h1>
@@ -20,6 +24,5 @@
         <div class="bottom-container">
             <button class="start-btn" ng-click="startGame()" ng-disabled="gameInProgress">Começar!</button>
         </div>
-        <script src="./app/app.js"></script>
     </body>
 </html>
