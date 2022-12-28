@@ -3,18 +3,18 @@ app2048.controller("appController", function ($scope, colorsService) {
     $scope.itemColor = colorsService.itemColor;
     $scope.gameInProgress = false;
     $scope.positionsDOM = [
-        {0: null, 1: null, 2: null, 3: 2},
         {0: null, 1: null, 2: null, 3: null},
         {0: null, 1: null, 2: null, 3: null},
-        {0: null, 1: null, 2: null, 3: 2}
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: null}
     ];
     let positions;
 
     $scope.startGame = () => {
         $scope.gameInProgress = true;
-        // for(i = 0; i < 2; i++) {
-        //     $scope.positionsDOM[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
-        // }
+        for(i = 0; i < 2; i++) {
+            $scope.positionsDOM[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
+        }
         positions = $scope.positionsDOM;
     }
 
@@ -25,7 +25,7 @@ app2048.controller("appController", function ($scope, colorsService) {
             $scope.startGame();
         }
 
-        if($scope.gameInProgress && arrows.includes(key) ) {//ligar availability observer
+        if($scope.gameInProgress && arrows.includes(key) && availabilityObserver() ) {
             switch(key) {
                 case 'ArrowUp':
                     moveItemsUp();
@@ -41,7 +41,7 @@ app2048.controller("appController", function ($scope, colorsService) {
                     break;
             }
 
-        // generateNumberOnEmptyPosition();
+        generateNumberOnEmptyPosition();
         $scope.positionsDOM = positions;
         }   
     }
@@ -61,7 +61,7 @@ app2048.controller("appController", function ($scope, colorsService) {
         for (let j = 0; j < 4; j++) {
             for (let i = 0; i < 4; i++) {
                 if (positions[i][j]) {
-                    downSum(i, j);
+                    // downSum(i, j);
                     // downMove(i, j);
                 }
             }
@@ -107,9 +107,9 @@ app2048.controller("appController", function ($scope, colorsService) {
                     positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
                     positions[lineLoop][actualCol] = null;
                     break;
-                } else if (positions[actualIndex + 1][actualCol] && positions[actualIndex][actualCol] === positions[actualIndex + 1][actualCol]) {
+                } else if (positions[lineLoop][actualCol] && positions[actualIndex][actualCol] === positions[lineLoop][actualCol]) {
                     positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
-                    positions[actualIndex + 1][actualCol] = null;
+                    positions[lineLoop][actualCol] = null;
                     break;
                 }
             }
@@ -117,6 +117,47 @@ app2048.controller("appController", function ($scope, colorsService) {
     }
 
     const upMove = (actualIndex, actualCol) => {
+        let availableCornerNearest;
+
+        for (let i = actualIndex - 1; i >= 0; i--) {
+            if (positions[i][actualCol]) {
+                continue;
+            }
+            availableCornerNearest = i;
+        }
+
+        if (typeof(availableCornerNearest) === 'number') {
+            positions[availableCornerNearest][actualCol] = positions[actualIndex][actualCol];
+            positions[actualIndex][actualCol] = null; 
+        }
+    }
+
+    const downSum = (actualIndex, actualCol) => {
+        for (let lineLoop = actualIndex + 1; lineLoop >= 0; lineLoop--) {
+            if (lineLoop < actualIndex && positions[lineLoop][actualCol] && positions[lineLoop][actualCol] === positions[actualIndex][actualCol] && (lineLoop + 1) < 4) { //mesmo valor na linha
+                let isPossibleSumFar;
+                
+                for (let counter = lineLoop + 1; counter < actualIndex; counter++) {
+                    if (positions[counter][actualCol]) {
+                        break;
+                    }
+
+                    isPossibleSumFar = true;
+                }
+
+                if (isPossibleSumFar) {
+                    positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
+                    positions[lineLoop][actualCol] = null;
+                    break;
+                } else if (positions[actualIndex][actualCol]) {
+                    //todo arrumar essa lógica
+                    break;
+                }
+            }
+        }
+    }
+
+    const downMove = (actualIndex, actualCol) => { //todo implementar método
         let availableCornerNearest;
 
         for (let i = actualIndex - 1; i >= 0; i--) {
@@ -145,7 +186,7 @@ app2048.controller("appController", function ($scope, colorsService) {
                     
                     isPossibleSumFar = true;
                 }
-                console.log(actualRow, actualIndex)
+
                 if (isPossibleSumFar) {
                     positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
                     positions[actualRow][lineLoop] = null;
