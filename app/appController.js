@@ -3,10 +3,10 @@ app2048.controller("appController", function ($scope, colorsService) {
     $scope.itemColor = colorsService.itemColor;
     $scope.gameInProgress = false;
     $scope.positionsDOM = [
-        {0: 16, 1: 8, 2: 8, 3: null},
-        {0: null, 1: null, 2: null, 3: null},
         {0: null, 1: null, 2: null, 3: 2},
-        {0: null, 1: null, 2: 4, 3: 2}
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: 2}
     ];
     let positions;
 
@@ -46,13 +46,23 @@ app2048.controller("appController", function ($scope, colorsService) {
         }   
     }
 
+    const moveItemsUp = () => {
+        for (let j = 0; j < 4; j++) {
+            for (let i = 0; i < 4; i++) {
+                if (positions[i][j]) {
+                    upSum(i, j);
+                    upMove(i, j);
+                }
+            }
+        }
+    }
+
     const moveItemsDown = () => {
         for (let j = 0; j < 4; j++) {
             for (let i = 0; i < 4; i++) {
                 if (positions[i][j]) {
-                    console.log(positions[i][j], [i, j])
                     downSum(i, j);
-                    // downMove(j, i);
+                    // downMove(i, j);
                 }
             }
         }
@@ -80,48 +90,47 @@ app2048.controller("appController", function ($scope, colorsService) {
         }
     }
 
-    const downSum = (actualRow, actualIndex) => {
+    const upSum = (actualIndex, actualCol) => {
         for (let lineLoop = actualIndex + 1; lineLoop < 4; lineLoop++) {
-            
-            if (positions[actualRow][lineLoop] && positions[actualRow][actualIndex] === positions[actualRow][lineLoop]) {
+            if (positions[lineLoop][actualCol] && positions[lineLoop][actualCol] === positions[actualIndex][actualCol]) { //mesmo valor na linha
                 let isPossibleSumFar;
-                
+
                 for (let counter = lineLoop - 1; counter > 0; counter--) {
-                    if (positions[actualRow][counter]) {
+                    if (positions[counter][actualCol]) {
                         break;
                     }
-                    
+
                     isPossibleSumFar = true;
                 }
 
-                // if (isPossibleSumFar) {
-                //     positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
-                //     positions[actualRow][lineLoop] = null;
-                //     break;
-                // } else if (positions[actualRow][actualIndex] === positions[actualRow][actualIndex + 1] && (actualIndex + 1) < 4) {
-                //     positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
-                //     positions[actualRow][actualIndex + 1] = null;
-                //     break;
-                // }
+                if (isPossibleSumFar) {
+                    positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
+                    positions[lineLoop][actualCol] = null;
+                    break;
+                } else if (positions[actualIndex + 1][actualCol] && positions[actualIndex][actualCol] === positions[actualIndex + 1][actualCol]) {
+                    positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
+                    positions[actualIndex + 1][actualCol] = null;
+                    break;
+                }
             }
         }
     }
 
-    // const downMove = (actualRow, actualIndex) => {
-    //     let availableCornerNearest;
+    const upMove = (actualIndex, actualCol) => {
+        let availableCornerNearest;
 
-    //     for (let i = actualIndex - 1; i >= 0; i--) {
-    //         if (positions[actualRow][i]) {
-    //             continue;
-    //         }
-    //         availableCornerNearest = i;
-    //     }
+        for (let i = actualIndex - 1; i >= 0; i--) {
+            if (positions[i][actualCol]) {
+                continue;
+            }
+            availableCornerNearest = i;
+        }
 
-    //     if (typeof(availableCornerNearest) === 'number') {
-    //         positions[actualRow][availableCornerNearest] = positions[actualRow][actualIndex];
-    //         positions[actualRow][actualIndex] = null; 
-    //     }
-    // }
+        if (typeof(availableCornerNearest) === 'number') {
+            positions[availableCornerNearest][actualCol] = positions[actualIndex][actualCol];
+            positions[actualIndex][actualCol] = null; 
+        }
+    }
 
     const leftSum = (actualRow, actualIndex) => {
         for (let lineLoop = actualIndex + 1; lineLoop < 4; lineLoop++) {
@@ -136,7 +145,7 @@ app2048.controller("appController", function ($scope, colorsService) {
                     
                     isPossibleSumFar = true;
                 }
-
+                console.log(actualRow, actualIndex)
                 if (isPossibleSumFar) {
                     positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
                     positions[actualRow][lineLoop] = null;
