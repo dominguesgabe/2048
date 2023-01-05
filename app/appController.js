@@ -3,26 +3,29 @@ app2048.controller("appController", function ($scope, colorsService) {
     $scope.itemColor = colorsService.itemColor;
     $scope.gameInProgress = false;
     $scope.positionsDOM = [
-        {0: null, 1: null, 2: null, 3: 2},
         {0: null, 1: null, 2: null, 3: null},
-        {0: null, 1: null, 2: null, 3: 4},
-        {0: null, 1: null, 2: null, 3: 2}
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: null}
     ];
     let positions;
 
     $scope.startGame = () => {
         $scope.gameInProgress = true;
 
-        for(i = 0; i < 2; i++) {
-            $scope.positionsDOM[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
+        // $scope.positionsDOM = [ //jogo perdido
+        //     {0: 16, 1: 8, 2: 4, 3: 2},
+        //     {0: 2, 1: 4, 2: 8, 3: 16},
+        //     {0: 16, 1: 8, 2: 4, 3: 2},
+        //     {0: 2, 1: 4, 2: 8, 3: 16}
+        // ];
+
+        if(availabilityObserver()) {
+            for(i = 0; i < 1; i++) {
+                $scope.positionsDOM[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
+            }
         }
 
-        $scope.positionsDOM = [
-            {0: null, 1: null, 2: null, 3: null},
-            {0: null, 1: null, 2: null, 3: null},
-            {0: null, 1: null, 2: null, 3: null},
-            {0: null, 1: null, 2: null, 3: null}
-        ];
         positions = $scope.positionsDOM;
     }
 
@@ -47,8 +50,8 @@ app2048.controller("appController", function ($scope, colorsService) {
                     break;
             }
 
-        generateNumberOnEmptyPosition();
-        $scope.positionsDOM = positions;
+            generateNumberOnEmptyPosition();
+            $scope.positionsDOM = positions;
         }   
     }
 
@@ -65,7 +68,7 @@ app2048.controller("appController", function ($scope, colorsService) {
 
     const moveItemsDown = () => {
         for (let j = 0; j < 4; j++) {
-            for (let i = 0; i < 4; i++) {
+            for (let i = 3; i >= 0; i--) {
                 if (positions[i][j]) {
                     downSum(i, j);
                     downMove(i, j);
@@ -101,7 +104,8 @@ app2048.controller("appController", function ($scope, colorsService) {
             if (positions[lineLoop][actualCol] && positions[lineLoop][actualCol] === positions[actualIndex][actualCol]) {
                 let isPossibleSumFar;
 
-                for (let counter = lineLoop - 1; counter > 0; counter--) {
+                for (let counter = lineLoop - 1; counter >= 0; counter--) {
+
                     if (positions[counter][actualCol]) {
                         break;
                     }
@@ -113,9 +117,9 @@ app2048.controller("appController", function ($scope, colorsService) {
                     positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
                     positions[lineLoop][actualCol] = null;
                     break;
-                } else if (positions[lineLoop][actualCol] && positions[actualIndex][actualCol] === positions[lineLoop][actualCol]) {
+                } else if (positions[actualIndex][actualCol] && positions[actualIndex][actualCol] === positions[actualIndex +1][actualCol]) {
                     positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
-                    positions[lineLoop][actualCol] = null;
+                    positions[actualIndex +1][actualCol] = null;
                     break;
                 }
             }
@@ -139,8 +143,9 @@ app2048.controller("appController", function ($scope, colorsService) {
     }
 
     const downSum = (actualIndex, actualCol) => {
-        for (let lineLoop = actualIndex + 1; lineLoop >= 0; lineLoop--) {
-            if (lineLoop < actualIndex && positions[lineLoop][actualCol] && positions[lineLoop][actualCol] === positions[actualIndex][actualCol] && (lineLoop + 1) < 4) {
+        for (let lineLoop = actualIndex - 1; lineLoop >= 0; lineLoop--) {
+            if (positions[lineLoop][actualCol] && positions[lineLoop][actualCol] === positions[actualIndex][actualCol] && (lineLoop + 1) < 4) {
+
                 let isPossibleSumFar;
 
                 for (let counter = lineLoop + 1; counter < 4; counter++) {
@@ -150,14 +155,14 @@ app2048.controller("appController", function ($scope, colorsService) {
                     
                     isPossibleSumFar = true;
                 }
-                
+
                 if (isPossibleSumFar) {
                     positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
                     positions[lineLoop][actualCol] = null;
                     break;
-                } else if (positions[lineLoop][actualCol] === positions[actualIndex][actualCol] && positions[actualIndex - 1][actualCol]) {
+                } else if (positions[actualIndex][actualCol] === positions[actualIndex - 1][actualCol] && positions[lineLoop][actualCol]) {
                     positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2; 
-                    positions[lineLoop][actualCol] = null; 
+                    positions[actualIndex - 1][actualCol] = null; 
                     break;
                 }
             }
@@ -274,16 +279,20 @@ app2048.controller("appController", function ($scope, colorsService) {
                 allPositionsValue.push($scope.positionsDOM[i][j]);
 
                 if ($scope.positionsDOM[i][j] === 2048) {
-                    endGameVictory()
+                    endGame("victory")
                 }
             }
         }
         
-        return true;
+            return true;
     }
 
-    const endGameVictory = () => {
-        alert('Congrats, you win!');
+    const endGame = (status) => {
+        if (status === "victory") {
+            alert('Congrats, you win!');
+        } else {
+        alert('Sorry, you lost. But don\'t be shy, you can try again!');
+        }
         $scope.gameInProgress = false;
     }
 
