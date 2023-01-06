@@ -13,28 +13,30 @@ app2048.controller("appController", function ($scope, colorsService) {
     $scope.startGame = () => {
         $scope.gameInProgress = true;
 
-        // $scope.positionsDOM = [ //jogo perdido
-        //     {0: 16, 1: 8, 2: 4, 3: 2},
-        //     {0: 2, 1: 4, 2: 8, 3: 16},
-        //     {0: 16, 1: 8, 2: 4, 3: 2},
-        //     {0: 2, 1: 4, 2: 8, 3: 16}
-        // ];
+        $scope.positionsDOM = [ //jogo perdido
+            {0: 16, 1: 8, 2: 4, 3: 2},
+            {0: 2, 1: 4, 2: 8, 3: 16},
+            {0: 16, 1: 8, 2: 4, 3: 2},
+            {0: 2, 1: 4, 2: 8, 3: 16}
+        ];
 
-        if(availabilityObserver()) {
-            for(i = 0; i < 1; i++) {
-                $scope.positionsDOM[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
-            }
-        }
+        // if(availabilityObserver()) {
+        //     for(i = 0; i < 1; i++) {
+        //         $scope.positionsDOM[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
+        //     }
+        // }
 
         positions = $scope.positionsDOM;
     }
 
     $scope.userClick = (key) => {
+        const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+
         if (key === 'Enter' && !$scope.gameInProgress) {
             $scope.startGame();
         }
 
-        if($scope.gameInProgress && availabilityObserver()) {
+        if($scope.gameInProgress && availabilityObserver() && keys.includes(key)) {
             switch(key) {
                 case 'ArrowUp':
                     moveItemsUp();
@@ -48,9 +50,9 @@ app2048.controller("appController", function ($scope, colorsService) {
                 case 'ArrowRight':
                     moveItemsRight();
                     break;
-            }
-
-            generateNumberOnEmptyPosition();
+                    
+                }
+            // generateNumberOnEmptyPosition();
             $scope.positionsDOM = positions;
         }   
     }
@@ -284,7 +286,11 @@ app2048.controller("appController", function ($scope, colorsService) {
             }
         }
         
+        if (allPositionsValue.length < 16) {
             return true;
+        }
+
+        return false;
     }
 
     const endGame = (status) => {
