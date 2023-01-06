@@ -8,25 +8,35 @@ app2048.controller("appController", function ($scope, colorsService) {
         {0: null, 1: null, 2: null, 3: null},
         {0: null, 1: null, 2: null, 3: null}
     ];
+    // $scope.positionsDOM = [ //jogo perdido
+    //         {0: 16, 1: 8, 2: 4, 3: 2},
+    //         {0: 2, 1: 4, 2: 8, 3: 16},
+    //         {0: 16, 1: 8, 2: 4, 3: 2},
+    //         {0: 2, 1: 4, 2: 8, 3: 16}
+    //     ];
+
     let positions;
+    let moveChangedPositions = {
+        ArrowUp: null, ArrowDown: null, ArrowLeft: null, ArrowRight: null
+    }
 
     $scope.startGame = () => {
         $scope.gameInProgress = true;
 
-        $scope.positionsDOM = [ //jogo perdido
-            {0: 16, 1: 8, 2: 4, 3: 2},
-            {0: 2, 1: 4, 2: 8, 3: 16},
-            {0: 16, 1: 8, 2: 4, 3: 2},
-            {0: 2, 1: 4, 2: 8, 3: 16}
+        $scope.positionsDOM = [
+            {0: null, 1: null, 2: null, 3: null},
+            {0: null, 1: null, 2: null, 3: null},
+            {0: null, 1: null, 2: null, 3: null},
+            {0: null, 1: null, 2: null, 3: null}
         ];
-
-        // if(availabilityObserver()) {
-        //     for(i = 0; i < 1; i++) {
-        //         $scope.positionsDOM[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
-        //     }
-        // }
-
+        
         positions = $scope.positionsDOM;
+
+        if(availabilityObserver()) {
+            for(i = 0; i < 1; i++) {
+                $scope.positionsDOM[randomNum(4)][randomNum(4)] = randomNumTwoOrFour();
+            }
+        }
     }
 
     $scope.userClick = (key) => {
@@ -37,6 +47,7 @@ app2048.controller("appController", function ($scope, colorsService) {
         }
 
         if($scope.gameInProgress && availabilityObserver() && keys.includes(key)) {
+
             switch(key) {
                 case 'ArrowUp':
                     moveItemsUp();
@@ -52,7 +63,7 @@ app2048.controller("appController", function ($scope, colorsService) {
                     break;
                     
                 }
-            // generateNumberOnEmptyPosition();
+            generateNumberOnEmptyPosition();
             $scope.positionsDOM = positions;
         }   
     }
@@ -66,6 +77,8 @@ app2048.controller("appController", function ($scope, colorsService) {
                 }
             }
         }
+        
+        // gameChanged('ArrowUp');
     }
 
     const moveItemsDown = () => {
@@ -77,6 +90,8 @@ app2048.controller("appController", function ($scope, colorsService) {
                 }
             }
         }
+
+        // gameChanged('ArrowDown');
     }
 
     const moveItemsLeft = () => {
@@ -88,6 +103,8 @@ app2048.controller("appController", function ($scope, colorsService) {
                 }
             }
         }
+
+        // gameChanged('ArrowLeft');
     }
 
     const moveItemsRight = () => {
@@ -99,6 +116,8 @@ app2048.controller("appController", function ($scope, colorsService) {
                 }
             }
         }
+
+        // gameChanged('ArrowRight');
     }
 
     const upSum = (actualIndex, actualCol) => {
@@ -276,28 +295,27 @@ app2048.controller("appController", function ($scope, colorsService) {
 
     const availabilityObserver = () => {
         let allPositionsValue = [];
+        
         for (i = 0; i < $scope.positionsDOM.length; i++) {
             for (j = 0; j < $scope.positionsDOM.length; j++) {
-                allPositionsValue.push($scope.positionsDOM[i][j]);
+                if (typeof($scope.positionsDOM[i][j]) === 'number') {
+                    allPositionsValue.push($scope.positionsDOM[i][j]);
+                }
 
                 if ($scope.positionsDOM[i][j] === 2048) {
                     endGame("victory")
                 }
             }
         }
-        
-        if (allPositionsValue.length < 16) {
-            return true;
-        }
 
-        return false;
+        return true;
     }
 
     const endGame = (status) => {
         if (status === "victory") {
             alert('Congrats, you win!');
-        } else {
-        alert('Sorry, you lost. But don\'t be shy, you can try again!');
+        } else if (status === "lose") {
+            alert('Sorry, you lost. But don\'t be shy, you can try again!');
         }
         $scope.gameInProgress = false;
     }
@@ -385,6 +403,32 @@ app2048.controller("appController", function ($scope, colorsService) {
         } else {
             generateNumberOnEmptyPosition();
         }
+    }
 
+    const gameChanged = (key) => {
+        if (JSON.stringify(positions) == JSON.stringify($scope.positionsDOM)) {
+            switch(key) {
+                case 'ArrowUp':
+                    moveChangedPositions.ArrowUp = false;
+                    break;
+                case 'ArrowDown':
+                    moveChangedPositions.ArrowDown = false;
+                    break;
+                case 'ArrowLeft':
+                    moveChangedPositions.ArrowLeft = false;
+                    break;
+                case 'ArrowRight':
+                    moveChangedPositions.ArrowRight = false;
+                    break; 
+                }
+        } else {
+            moveChangedPositions = {
+                ArrowUp: null, ArrowDown: null, ArrowLeft: null, ArrowRight: null
+            }
+        }
+        console.log($scope.positionsDOM === positions);
+        if (!Object.values(moveChangedPositions).includes(null)) {
+            endGame('lose');
+        }
     }
 })
