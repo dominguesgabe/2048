@@ -2,32 +2,31 @@ app2048.controller("appController", function ($scope, colorsService) {
 
     $scope.itemColor = colorsService.itemColor;
     $scope.gameInProgress = false;
-    // $scope.positionsDOM = [
-    //     {0: null, 1: null, 2: null, 3: null},
-    //     {0: null, 1: null, 2: null, 3: null},
-    //     {0: null, 1: null, 2: null, 3: null},
-    //     {0: null, 1: null, 2: null, 3: null}
-    // ];
-    $scope.positionsDOM = [ //jogo perdido
-            {0: 16, 1: 8, 2: 4, 3: null},
-            {0: 2, 1: 4, 2: 8, 3: 16},
-            {0: 16, 1: 8, 2: 4, 3: 2},
-            {0: 2, 1: null, 2: 8, 3: 16}
-        ];
+    $scope.positionsDOM = [
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: null},
+        {0: null, 1: null, 2: null, 3: null}
+    ];
 
     let positions;
-    let stateChanged = []; //trocarr para objeto
+    let stateChanged = {
+        up: null,
+        down: null,
+        left: null,
+        right: null
+    };
     let ocuppiedPositions;
 
     $scope.startGame = () => {
         $scope.gameInProgress = true;
 
-        // $scope.positionsDOM = [
-        //     {0: null, 1: null, 2: null, 3: null},
-        //     {0: null, 1: null, 2: null, 3: null},
-        //     {0: null, 1: null, 2: null, 3: null},
-        //     {0: null, 1: null, 2: null, 3: null}
-        // ];
+        $scope.positionsDOM = [
+            {0: null, 1: null, 2: null, 3: null},
+            {0: null, 1: null, 2: null, 3: null},
+            {0: null, 1: null, 2: null, 3: null},
+            {0: null, 1: null, 2: null, 3: null}
+        ];
         
         positions = $scope.positionsDOM;
 
@@ -54,26 +53,27 @@ app2048.controller("appController", function ($scope, colorsService) {
             switch(key) {
                 case 'ArrowUp':
                     let moveUpChanged = moveItemsUp();
-                    stateChanged.push(moveUpChanged);
+                    stateChanged.up = moveUpChanged;
 
-                    console.log(moveUpChanged)
                     break;
                 case 'ArrowDown':
                     let moveDownChanged = moveItemsDown();
-                    stateChanged.push(moveDownChanged);
+                    stateChanged.down = moveDownChanged;
+
                     break;
                 case 'ArrowLeft':
                     let moveLeftChanged = moveItemsLeft();
-                    // stateChanged.push(moveLeftChanged);
+                    stateChanged.left = moveLeftChanged;
+
                     break;
                 case 'ArrowRight':
                     let moveRightChanged = moveItemsRight();
-                    // stateChanged.push(moveRightChanged);
+                    stateChanged.right = moveRightChanged;
+                    
                     break;  
             }
 
             stateChangedObserver();
-            console.log(stateChanged)
             generateNumberOnEmptyPosition();
             $scope.positionsDOM = positions;
         }   
@@ -118,27 +118,41 @@ app2048.controller("appController", function ($scope, colorsService) {
     }
 
     const moveItemsLeft = () => {
+        let stateChanged = false;
+
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 4; j++) {
                 if (positions[i][j]) {
-                    leftSum(i, j);
-                    leftMove(i, j);
+                    let leftSumChanged = leftSum(i, j);
+                    let leftMoveChanged = leftMove(i, j);
+
+                    if(leftSumChanged || leftMoveChanged) {
+                        stateChanged = true;
+                    }
                 }
             }
         }
 
+        return stateChanged;
     }
 
     const moveItemsRight = () => {
+        let stateChanged = false;
+
         for (let i = 3; i >= 0; i--) {
             for (let j = 3; j >= 0; j--) {
                 if (positions[i][j]) {
-                    rightSum(i, j);
-                    rightMove(i, j);
+                    let rightSumChanged = rightSum(i, j);
+                    let rightMoveChanged = rightMove(i, j);
+
+                    if(rightSumChanged || rightMoveChanged) {
+                        stateChanged = true;
+                    }
                 }
             }
         }
 
+        return stateChanged;
     }
 
     const upSum = (actualIndex, actualCol) => {
@@ -255,6 +269,8 @@ app2048.controller("appController", function ($scope, colorsService) {
     }
 
     const leftSum = (actualRow, actualIndex) => {
+        let stateChanged = false;
+
         for (let lineLoop = actualIndex + 1; lineLoop < 4; lineLoop++) {
             
             if (positions[actualRow][lineLoop] && positions[actualRow][actualIndex] === positions[actualRow][lineLoop]) {
@@ -271,17 +287,24 @@ app2048.controller("appController", function ($scope, colorsService) {
                 if (isPossibleSumFar) {
                     positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
                     positions[actualRow][lineLoop] = null;
+
+                    stateChanged = true;
                     break;
                 } else if (positions[actualRow][actualIndex] === positions[actualRow][actualIndex + 1] && (actualIndex + 1) < 4) {
                     positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
                     positions[actualRow][actualIndex + 1] = null;
+
+                    stateChanged = true;
                     break;
                 }
             }
         }
+
+        return stateChanged;
     }
 
     const leftMove = (actualRow, actualIndex) => {
+        let stateChanged = false;
         let availableCornerNearest;
 
         for (let i = actualIndex - 1; i >= 0; i--) {
@@ -294,10 +317,16 @@ app2048.controller("appController", function ($scope, colorsService) {
         if (typeof(availableCornerNearest) === 'number') {
             positions[actualRow][availableCornerNearest] = positions[actualRow][actualIndex];
             positions[actualRow][actualIndex] = null; 
+
+            stateChanged = true;
         }
+
+        return stateChanged;
     }
 
-    const rightSum = (actualRow, actualIndex) => {//nao funcionando
+    const rightSum = (actualRow, actualIndex) => {
+        let stateChanged = false;
+
         for (let lineLoop = actualIndex; lineLoop >= 0; lineLoop--) {
             
             if (lineLoop < actualIndex && positions[actualRow][lineLoop] && (lineLoop + 1) < 4 && positions[actualRow][actualIndex] === positions[actualRow][lineLoop]) {
@@ -314,17 +343,24 @@ app2048.controller("appController", function ($scope, colorsService) {
                 if (isPossibleSumFar) {
                     positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
                     positions[actualRow][lineLoop] = null;
+
+                    stateChanged = true;
                     break;
                 } else if (positions[actualRow][lineLoop] === positions[actualRow][lineLoop + 1] && (lineLoop + 1) < 4) {
                     positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
                     positions[actualRow][lineLoop] = null;
+
+                    stateChanged = true;
                     break;
                 }
             }
         }
+
+        return stateChanged;
     }
 
     const rightMove = (actualRow, actualIndex) => {
+        let stateChanged = false;
         let availableCornerNearest;
 
         for (let i = actualIndex + 1; i < 4; i++) {
@@ -337,8 +373,12 @@ app2048.controller("appController", function ($scope, colorsService) {
 
         if (typeof(availableCornerNearest) === 'number') {
             positions[actualRow][availableCornerNearest] = positions[actualRow][actualIndex];
-            positions[actualRow][actualIndex] = null; 
+            positions[actualRow][actualIndex] = null;
+
+            stateChanged = true;
         }
+
+        return stateChanged;
     }
 
     const availabilityObserver = () => {
@@ -453,8 +493,18 @@ app2048.controller("appController", function ($scope, colorsService) {
     }
 
     const stateChangedObserver = () => {
-        if(stateChanged.includes(true)) {
-            return stateChanged = [];
+
+        if (Object.values(stateChanged).includes(true)) {
+            stateChanged = {
+                up: null,
+                down: null,
+                left: null,
+                right: null
+            }
+        }
+
+        if (!Object.values(stateChanged).includes(null)) {
+            endGame('lose');
         }
     }
 })
