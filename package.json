@@ -1,26 +1,29 @@
 {
-    "name": "2048",
-    "version": "1.0.0",
-    "description": "2048 app",
-    "main": "index.js",
-    "directories": {
-        "test": "tests"
-    },
-    "scripts": {
-        "test": "jasmine"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/dominguesgabe/2048.git"
-    },
-    "author": "dominguesgabe",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/dominguesgabe/2048/issues"
-    },
-    "homepage": "https://github.com/dominguesgabe/2048#readme",
-    "dependencies": {
-        "angular": "^1.8.2",
-        "jasmine": "^4.4.0"
-    }
+  "name": "2048",
+  "version": "1.0.0",
+  "description": "2048 app",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominguesgabe/2048.git"
+  },
+  "author": "dominguesgabe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dominguesgabe/2048/issues"
+  },
+  "homepage": "https://github.com/dominguesgabe/2048#readme",
+  "dependencies": {
+    "angular": "^1.8.2"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "jasmine": "^4.5.0"
+  }
 }
