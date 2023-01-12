@@ -1,21 +1,34 @@
-describe('Colors service test', function() {
+const {describe, beforeEach, it, expect, jasmine, inject} = require('jasmine-core').noGlobals();
 
-    var angular = require('angular');
-        angular.module('app2048', [
-        require('angular-mocks/angular-mocks'),
-        require('angular-mocks/ngMock')
-    ]); 
+// describe('Module', function () {
+//     var $window;
 
-    // beforeEach(module('app2048'));
-    // beforeEach(inject(function(_$rootScope_, _$compile_) {
-    //     $scope = _$rootScope_;
-    //     $compile = _$compile_;
-    //   }));
+//     // beforeEach(inject(function(_$window_) {
+//     //     $window = _$window_;
+//     //     spyOn($window, 'whateverFn');
 
-    it('should return any color', function() {
-        const greet = 'hello';
-        const to = 'world';
+//     //     module('Module');
+//     // }));
 
-        expect(greet + ' ' + to).toEqual('hello world');
-    });
+//     beforeEach(inject((colorsService) => {
+//         colorsServiceMock = colorsService;
+//     }))
+
+//     it('Should check if colorsService does exist', () => {
+//         expect(4).toEqual(5);
+//     })
+
+// });
+
+var colorsService;
+
+// Wrap the parameter in underscores
+beforeEach( inject( function(_colorsService_){
+    colorsService = _colorsService_;
+}));
+
+// Use myService in a series of tests.
+it('makes use of myService', function() {
+  let value = myService.itemColor(2);
+  expect(value).toEqual('value');
 });

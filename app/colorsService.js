@@ -9,7 +9,7 @@ angular.module("app2048").service("colorsService", function () {
             case 4:
             case 64:
             case 1024:
-                return 'blue-item';
+                return 'value';
 
             case 8:
             case 128:

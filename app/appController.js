@@ -1,4 +1,4 @@
-app2048.controller("appController", function ($scope, colorsService) {
+app2048.controller("appController", function ($scope, $window, colorsService) {
 
     $scope.itemColor = colorsService.itemColor;
     $scope.gameInProgress = false;
@@ -402,9 +402,9 @@ app2048.controller("appController", function ($scope, colorsService) {
 
     const endGame = (status) => {
         if (status === "victory") {
-            alert('Congrats, you win!');
+            $window.alert('Congrats, you win!');
         } else if (status === "lose") {
-            alert('Sorry, you lost. But don\'t be shy, you can try again!');
+            $window.alert('Sorry, you lost. But don\'t be shy, you can try again!');
         }
         $scope.gameInProgress = false;
     }
@@ -507,4 +507,4 @@ app2048.controller("appController", function ($scope, colorsService) {
             endGame('lose');
         }
     }
-})
+});
