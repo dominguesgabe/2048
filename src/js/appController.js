@@ -1,4 +1,4 @@
-app2048.controller("appController", function ($scope, $window, colorsService, collectionsFactory) {
+app2048.controller("appController", function ($scope, $window, colorsService, collectionsFactory, moveItemsService) {
 
     $scope.itemColor = colorsService.itemColor;
     $scope.gameInProgress = false;
@@ -33,7 +33,8 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
             
             switch(key) {
                 case 'ArrowUp':
-                    let moveUpChanged = moveItemsUp();
+                    const [positionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM);
+                    $scope.positionsDOM = positionsDOM;
                     stateChanged.up = moveUpChanged;
 
                     break;
@@ -57,25 +58,6 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
             stateChangedObserver();
             generateNumberOnEmptyPosition();
         }   
-    }
-
-    const moveItemsUp = () => {
-        let stateChanged = false;
-
-        for (let j = 0; j < 4; j++) {
-            for (let i = 0; i < 4; i++) {
-                if ($scope.positionsDOM[i][j]) {
-                    let upSumChanged = upSum(i, j);
-                    let upSumMoved = upMove(i, j);
-                    
-                    if (upSumChanged || upSumMoved) {
-                        stateChanged = true;
-                    }
-                }
-            }
-        }
-        
-        return stateChanged;
     }
 
     const moveItemsDown = () => {
@@ -130,63 +112,6 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
                     }
                 }
             }
-        }
-
-        return stateChanged;
-    }
-
-    const upSum = (actualIndex, actualCol) => {
-        let stateChanged = false;
-
-        for (let lineLoop = actualIndex + 1; lineLoop < 4; lineLoop++) {
-            if ($scope.positionsDOM[lineLoop][actualCol] && $scope.positionsDOM[lineLoop][actualCol] === $scope.positionsDOM[actualIndex][actualCol]) {
-                let isPossibleSumFar;
-
-                for (let counter = lineLoop - 1; counter >= 0; counter--) {
-
-                    if ($scope.positionsDOM[counter][actualCol]) {
-                        break;
-                    }
-
-                    isPossibleSumFar = true;
-                }
-
-
-                if (isPossibleSumFar) {
-                    $scope.positionsDOM[actualIndex][actualCol] = $scope.positionsDOM[actualIndex][actualCol] * 2;
-                    $scope.positionsDOM[lineLoop][actualCol] = null;
-
-                    stateChanged = true;
-                    break;
-                } else if ($scope.positionsDOM[actualIndex][actualCol] && $scope.positionsDOM[actualIndex][actualCol] === $scope.positionsDOM[actualIndex + 1][actualCol]) {
-                    $scope.positionsDOM[actualIndex][actualCol] = $scope.positionsDOM[actualIndex][actualCol] * 2;
-                    $scope.positionsDOM[actualIndex + 1][actualCol] = null;
-
-                    stateChanged = true;
-                    break;
-                }
-            }
-        }
-
-        return stateChanged;
-    }
-
-    const upMove = (actualIndex, actualCol) => {
-        let stateChanged = false;
-        let availableCornerNearest;
-
-        for (let i = actualIndex - 1; i >= 0; i--) {
-            if ($scope.positionsDOM[i][actualCol]) {
-                continue;
-            }
-            availableCornerNearest = i;
-        }
-
-        if (typeof(availableCornerNearest) === 'number') {
-            $scope.positionsDOM[availableCornerNearest][actualCol] = $scope.positionsDOM[actualIndex][actualCol];
-            $scope.positionsDOM[actualIndex][actualCol] = null; 
-
-            stateChanged = true;
         }
 
         return stateChanged;
