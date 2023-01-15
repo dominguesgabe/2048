@@ -2,12 +2,9 @@
   "name": "2048",
   "version": "1.0.0",
   "description": "2048 app",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
+  "main": "index.html",
   "scripts": {
-    "test": "jasmine"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,11 +17,10 @@
   },
   "homepage": "https://github.com/dominguesgabe/2048#readme",
   "dependencies": {
-    "angular": "^1.8.2"
+    "angular": "^1.6.6"
   },
-  "keywords": [],
   "devDependencies": {
-    "angular-mocks": "^1.8.3",
-    "jasmine": "^4.5.0"
+    "angular-mocks": "^1.6.6",
+    "jest-cli": "^21.2.1"
   }
 }

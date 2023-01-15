@@ -1,5 +1,5 @@
 angular.module("app2048").service("colorsService", function () {
-    this.itemColor = (item) => {
+    function itemColor(item) {
         switch (item) {
             case 2:
             case 32:
@@ -9,7 +9,7 @@ angular.module("app2048").service("colorsService", function () {
             case 4:
             case 64:
             case 1024:
-                return 'value';
+                return 'blue-item';
 
             case 8:
             case 128:
@@ -21,4 +21,6 @@ angular.module("app2048").service("colorsService", function () {
                 return 'green-item';
         }
     }
+
+    return {itemColor};
 })

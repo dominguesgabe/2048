@@ -1,9 +1,23 @@
-# 2048
-2048 game using AngularJs from scratch
+# AngularJs with Jest example
 
-## You can play this at
-> https://dominguesgabe-2048.netlify.app/
+https://www.curtiscode.dev/post/angularjs/angularjs-jest-unit-testing
 
-### ToDo
-- Improve the old methods
-- Unit testing 
+## Setup Steps
+
+### Clone Repository
+
+```
+git clone git@github.com:curtiscde/angularjs-jest-example.git
+```
+
+### Npm install dependencies
+
+```shell
+$ npm i
+```
+
+### Run tests
+
+```shell
+$ npm test
+```
