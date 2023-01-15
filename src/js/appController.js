@@ -1,37 +1,18 @@
-app2048.controller("appController", function ($scope, $window, colorsService) {
+app2048.controller("appController", function ($scope, $window, colorsService, collectionsFactory) {
 
     $scope.itemColor = colorsService.itemColor;
     $scope.gameInProgress = false;
-    $scope.positionsDOM = [
-        {0: null, 1: null, 2: null, 3: null},
-        {0: null, 1: null, 2: null, 3: null},
-        {0: null, 1: null, 2: null, 3: null},
-        {0: null, 1: null, 2: null, 3: null}
-    ];
+    $scope.positionsDOM = new collectionsFactory.positions();
 
-    let positions;
-    let stateChanged = {
-        up: null,
-        down: null,
-        left: null,
-        right: null
-    };
+    let stateChanged = new collectionsFactory.stateChanged();
     let ocuppiedPositions;
 
     $scope.startGame = () => {
         $scope.gameInProgress = true;
-
-        $scope.positionsDOM = [
-            {0: null, 1: null, 2: null, 3: null},
-            {0: null, 1: null, 2: null, 3: null},
-            {0: null, 1: null, 2: null, 3: null},
-            {0: null, 1: null, 2: null, 3: null}
-        ];
-        
-        positions = $scope.positionsDOM;
+        $scope.positionsDOM = new collectionsFactory.positions();
 
         if(availabilityObserver()) {
-            for(i = 0; i < 1; i++) {
+            for(i = 0; i < 2; i++) {
                 let row = randomNum(4);
                 let col = randomNum(4);
                 if (!$scope.positionsDOM[row][col]) {
@@ -42,7 +23,7 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
     }
 
     $scope.userClick = (key) => {
-        const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+        const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
         if (key === 'Enter' && !$scope.gameInProgress) {
             $scope.startGame();
@@ -75,7 +56,6 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
 
             stateChangedObserver();
             generateNumberOnEmptyPosition();
-            $scope.positionsDOM = positions;
         }   
     }
 
@@ -84,7 +64,7 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
 
         for (let j = 0; j < 4; j++) {
             for (let i = 0; i < 4; i++) {
-                if (positions[i][j]) {
+                if ($scope.positionsDOM[i][j]) {
                     let upSumChanged = upSum(i, j);
                     let upSumMoved = upMove(i, j);
                     
@@ -103,7 +83,7 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
 
         for (let j = 0; j < 4; j++) {
             for (let i = 3; i >= 0; i--) {
-                if (positions[i][j]) {
+                if ($scope.positionsDOM[i][j]) {
                     let downSumChanged = downSum(i, j);
                     let downSumMoved = downMove(i, j);
 
@@ -122,7 +102,7 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
 
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 4; j++) {
-                if (positions[i][j]) {
+                if ($scope.positionsDOM[i][j]) {
                     let leftSumChanged = leftSum(i, j);
                     let leftMoveChanged = leftMove(i, j);
 
@@ -141,7 +121,7 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
 
         for (let i = 3; i >= 0; i--) {
             for (let j = 3; j >= 0; j--) {
-                if (positions[i][j]) {
+                if ($scope.positionsDOM[i][j]) {
                     let rightSumChanged = rightSum(i, j);
                     let rightMoveChanged = rightMove(i, j);
 
@@ -159,12 +139,12 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
         let stateChanged = false;
 
         for (let lineLoop = actualIndex + 1; lineLoop < 4; lineLoop++) {
-            if (positions[lineLoop][actualCol] && positions[lineLoop][actualCol] === positions[actualIndex][actualCol]) {
+            if ($scope.positionsDOM[lineLoop][actualCol] && $scope.positionsDOM[lineLoop][actualCol] === $scope.positionsDOM[actualIndex][actualCol]) {
                 let isPossibleSumFar;
 
                 for (let counter = lineLoop - 1; counter >= 0; counter--) {
 
-                    if (positions[counter][actualCol]) {
+                    if ($scope.positionsDOM[counter][actualCol]) {
                         break;
                     }
 
@@ -173,14 +153,14 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
 
 
                 if (isPossibleSumFar) {
-                    positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
-                    positions[lineLoop][actualCol] = null;
+                    $scope.positionsDOM[actualIndex][actualCol] = $scope.positionsDOM[actualIndex][actualCol] * 2;
+                    $scope.positionsDOM[lineLoop][actualCol] = null;
 
                     stateChanged = true;
                     break;
-                } else if (positions[actualIndex][actualCol] && positions[actualIndex][actualCol] === positions[actualIndex +1][actualCol]) {
-                    positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
-                    positions[actualIndex +1][actualCol] = null;
+                } else if ($scope.positionsDOM[actualIndex][actualCol] && $scope.positionsDOM[actualIndex][actualCol] === $scope.positionsDOM[actualIndex + 1][actualCol]) {
+                    $scope.positionsDOM[actualIndex][actualCol] = $scope.positionsDOM[actualIndex][actualCol] * 2;
+                    $scope.positionsDOM[actualIndex + 1][actualCol] = null;
 
                     stateChanged = true;
                     break;
@@ -196,15 +176,15 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
         let availableCornerNearest;
 
         for (let i = actualIndex - 1; i >= 0; i--) {
-            if (positions[i][actualCol]) {
+            if ($scope.positionsDOM[i][actualCol]) {
                 continue;
             }
             availableCornerNearest = i;
         }
 
         if (typeof(availableCornerNearest) === 'number') {
-            positions[availableCornerNearest][actualCol] = positions[actualIndex][actualCol];
-            positions[actualIndex][actualCol] = null; 
+            $scope.positionsDOM[availableCornerNearest][actualCol] = $scope.positionsDOM[actualIndex][actualCol];
+            $scope.positionsDOM[actualIndex][actualCol] = null; 
 
             stateChanged = true;
         }
@@ -216,12 +196,12 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
         let stateChanged = false;
 
         for (let lineLoop = actualIndex - 1; lineLoop >= 0; lineLoop--) {
-            if (positions[lineLoop][actualCol] && positions[lineLoop][actualCol] === positions[actualIndex][actualCol] && (lineLoop + 1) < 4) {
+            if ($scope.positionsDOM[lineLoop][actualCol] && $scope.positionsDOM[lineLoop][actualCol] === $scope.positionsDOM[actualIndex][actualCol] && (lineLoop + 1) < 4) {
 
                 let isPossibleSumFar;
 
                 for (let counter = lineLoop + 1; counter < 4; counter++) {
-                    if (positions[counter][actualCol]) {
+                    if ($scope.positionsDOM[counter][actualCol]) {
                         break;
                     }
                     
@@ -229,14 +209,14 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
                 }
 
                 if (isPossibleSumFar) {
-                    positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2;
-                    positions[lineLoop][actualCol] = null;
+                    $scope.positionsDOM[actualIndex][actualCol] = $scope.positionsDOM[actualIndex][actualCol] * 2;
+                    $scope.positionsDOM[lineLoop][actualCol] = null;
 
                     stateChanged = true;
                     break;
-                } else if (positions[actualIndex][actualCol] === positions[actualIndex - 1][actualCol] && positions[lineLoop][actualCol]) {
-                    positions[actualIndex][actualCol] = positions[actualIndex][actualCol] * 2; 
-                    positions[actualIndex - 1][actualCol] = null; 
+                } else if ($scope.positionsDOM[actualIndex][actualCol] === $scope.positionsDOM[actualIndex - 1][actualCol] && $scope.positionsDOM[lineLoop][actualCol]) {
+                    $scope.positionsDOM[actualIndex][actualCol] = $scope.positionsDOM[actualIndex][actualCol] * 2; 
+                    $scope.positionsDOM[actualIndex - 1][actualCol] = null; 
 
                     stateChanged = true;
                     break;
@@ -252,15 +232,15 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
         let availableCornerNearest;
 
         for (let i = actualIndex + 1; i < 4; i++) {
-            if (positions[i][actualCol]) {
+            if ($scope.positionsDOM[i][actualCol]) {
                 continue;
             }
             availableCornerNearest = i;
         }
 
         if (typeof(availableCornerNearest) === 'number') {
-            positions[availableCornerNearest][actualCol] = positions[actualIndex][actualCol];
-            positions[actualIndex][actualCol] = null;
+            $scope.positionsDOM[availableCornerNearest][actualCol] = $scope.positionsDOM[actualIndex][actualCol];
+            $scope.positionsDOM[actualIndex][actualCol] = null;
 
             stateChanged = true;
         }
@@ -273,11 +253,11 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
 
         for (let lineLoop = actualIndex + 1; lineLoop < 4; lineLoop++) {
             
-            if (positions[actualRow][lineLoop] && positions[actualRow][actualIndex] === positions[actualRow][lineLoop]) {
+            if ($scope.positionsDOM[actualRow][lineLoop] && $scope.positionsDOM[actualRow][actualIndex] === $scope.positionsDOM[actualRow][lineLoop]) {
                 let isPossibleSumFar;
                 
                 for (let counter = lineLoop - 1; counter > 0; counter--) {
-                    if (positions[actualRow][counter]) {
+                    if ($scope.positionsDOM[actualRow][counter]) {
                         break;
                     }
                     
@@ -285,14 +265,14 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
                 }
 
                 if (isPossibleSumFar) {
-                    positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
-                    positions[actualRow][lineLoop] = null;
+                    $scope.positionsDOM[actualRow][actualIndex] = $scope.positionsDOM[actualRow][actualIndex] * 2;
+                    $scope.positionsDOM[actualRow][lineLoop] = null;
 
                     stateChanged = true;
                     break;
-                } else if (positions[actualRow][actualIndex] === positions[actualRow][actualIndex + 1] && (actualIndex + 1) < 4) {
-                    positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
-                    positions[actualRow][actualIndex + 1] = null;
+                } else if ($scope.positionsDOM[actualRow][actualIndex] === $scope.positionsDOM[actualRow][actualIndex + 1] && (actualIndex + 1) < 4) {
+                    $scope.positionsDOM[actualRow][actualIndex] = $scope.positionsDOM[actualRow][actualIndex] * 2;
+                    $scope.positionsDOM[actualRow][actualIndex + 1] = null;
 
                     stateChanged = true;
                     break;
@@ -308,15 +288,15 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
         let availableCornerNearest;
 
         for (let i = actualIndex - 1; i >= 0; i--) {
-            if (positions[actualRow][i]) {
+            if ($scope.positionsDOM[actualRow][i]) {
                 continue;
             }
             availableCornerNearest = i;
         }
 
         if (typeof(availableCornerNearest) === 'number') {
-            positions[actualRow][availableCornerNearest] = positions[actualRow][actualIndex];
-            positions[actualRow][actualIndex] = null; 
+            $scope.positionsDOM[actualRow][availableCornerNearest] = $scope.positionsDOM[actualRow][actualIndex];
+            $scope.positionsDOM[actualRow][actualIndex] = null; 
 
             stateChanged = true;
         }
@@ -329,11 +309,11 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
 
         for (let lineLoop = actualIndex; lineLoop >= 0; lineLoop--) {
             
-            if (lineLoop < actualIndex && positions[actualRow][lineLoop] && (lineLoop + 1) < 4 && positions[actualRow][actualIndex] === positions[actualRow][lineLoop]) {
+            if (lineLoop < actualIndex && $scope.positionsDOM[actualRow][lineLoop] && (lineLoop + 1) < 4 && $scope.positionsDOM[actualRow][actualIndex] === $scope.positionsDOM[actualRow][lineLoop]) {
                 let isPossibleSumFar;
                 
                 for (let counter = lineLoop + 1; counter < actualIndex; counter++) {
-                    if (positions[actualRow][counter]) {
+                    if ($scope.positionsDOM[actualRow][counter]) {
                         break;
                     }
                     
@@ -341,14 +321,14 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
                 }
 
                 if (isPossibleSumFar) {
-                    positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
-                    positions[actualRow][lineLoop] = null;
+                    $scope.positionsDOM[actualRow][actualIndex] = $scope.positionsDOM[actualRow][actualIndex] * 2;
+                    $scope.positionsDOM[actualRow][lineLoop] = null;
 
                     stateChanged = true;
                     break;
-                } else if (positions[actualRow][lineLoop] === positions[actualRow][lineLoop + 1] && (lineLoop + 1) < 4) {
-                    positions[actualRow][actualIndex] = positions[actualRow][actualIndex] * 2;
-                    positions[actualRow][lineLoop] = null;
+                } else if ($scope.positionsDOM[actualRow][lineLoop] === $scope.positionsDOM[actualRow][lineLoop + 1] && (lineLoop + 1) < 4) {
+                    $scope.positionsDOM[actualRow][actualIndex] = $scope.positionsDOM[actualRow][actualIndex] * 2;
+                    $scope.positionsDOM[actualRow][lineLoop] = null;
 
                     stateChanged = true;
                     break;
@@ -365,15 +345,15 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
 
         for (let i = actualIndex + 1; i < 4; i++) {
 
-            if (positions[actualRow][i]) {
+            if ($scope.positionsDOM[actualRow][i]) {
                 continue;
             }
             availableCornerNearest = i;
         }
 
         if (typeof(availableCornerNearest) === 'number') {
-            positions[actualRow][availableCornerNearest] = positions[actualRow][actualIndex];
-            positions[actualRow][actualIndex] = null;
+            $scope.positionsDOM[actualRow][availableCornerNearest] = $scope.positionsDOM[actualRow][actualIndex];
+            $scope.positionsDOM[actualRow][actualIndex] = null;
 
             stateChanged = true;
         }
@@ -384,8 +364,8 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
     const availabilityObserver = () => {
         let allPositionsValue = [];
         
-        for (i = 0; i < $scope.positionsDOM.length; i++) {
-            for (j = 0; j < $scope.positionsDOM.length; j++) {
+        for (i = 0; i < 4; i++) {
+            for (j = 0; j < 4; j++) {
                 if (typeof($scope.positionsDOM[i][j]) === 'number') {
                     allPositionsValue.push($scope.positionsDOM[i][j]);
                 }
@@ -406,6 +386,7 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
         } else if (status === "lose") {
             $window.alert('Sorry, you lost. But don\'t be shy, you can try again!');
         }
+
         $scope.gameInProgress = false;
     }
 
@@ -495,12 +476,7 @@ app2048.controller("appController", function ($scope, $window, colorsService) {
     const stateChangedObserver = () => {
 
         if (Object.values(stateChanged).includes(true)) {
-            stateChanged = {
-                up: null,
-                down: null,
-                left: null,
-                right: null
-            }
+            stateChanged = new collectionsFactory.stateChanged();
         }
 
         if (!Object.values(stateChanged).includes(null)) {
