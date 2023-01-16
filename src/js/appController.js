@@ -33,257 +33,34 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
             
             switch(key) {
                 case 'ArrowUp':
-                    const [positionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM);
-                    $scope.positionsDOM = positionsDOM;
+                    const [upPositionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM);
+                    $scope.positionsDOM = upPositionsDOM;
                     stateChanged.up = moveUpChanged;
 
                     break;
                 case 'ArrowDown':
-                    let moveDownChanged = moveItemsDown();
+                    const [downPositionsDOM, moveDownChanged] = moveItemsService.moveItemsDown($scope.positionsDOM);
+                    $scope.positionsDOM = downPositionsDOM;
                     stateChanged.down = moveDownChanged;
 
                     break;
                 case 'ArrowLeft':
-                    let moveLeftChanged = moveItemsLeft();
+                    const [leftPositionsDOM, moveLeftChanged] = moveItemsService.moveItemsLeft($scope.positionsDOM);
+                    $scope.positionsDOM = leftPositionsDOM;
                     stateChanged.left = moveLeftChanged;
 
                     break;
                 case 'ArrowRight':
-                    let moveRightChanged = moveItemsRight();
+                    const [rightPositionsDOM, moveRightChanged] = moveItemsService.moveItemsRight($scope.positionsDOM);
+                    $scope.positionsDOM = rightPositionsDOM;
                     stateChanged.right = moveRightChanged;
                     
                     break;  
             }
 
-            stateChangedObserver();
+            stateChangedObserver(); //todo não adicionar estado caso o último movimento não tenha alterrado em nada o objeto
             generateNumberOnEmptyPosition();
         }   
-    }
-
-    const moveItemsDown = () => {
-        let stateChanged = false;
-
-        for (let j = 0; j < 4; j++) {
-            for (let i = 3; i >= 0; i--) {
-                if ($scope.positionsDOM[i][j]) {
-                    let downSumChanged = downSum(i, j);
-                    let downSumMoved = downMove(i, j);
-
-                    if(downSumChanged || downSumMoved) {
-                        stateChanged = true;
-                    }
-                }
-            }
-        }
-
-        return stateChanged;
-    }
-
-    const moveItemsLeft = () => {
-        let stateChanged = false;
-
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
-                if ($scope.positionsDOM[i][j]) {
-                    let leftSumChanged = leftSum(i, j);
-                    let leftMoveChanged = leftMove(i, j);
-
-                    if(leftSumChanged || leftMoveChanged) {
-                        stateChanged = true;
-                    }
-                }
-            }
-        }
-
-        return stateChanged;
-    }
-
-    const moveItemsRight = () => {
-        let stateChanged = false;
-
-        for (let i = 3; i >= 0; i--) {
-            for (let j = 3; j >= 0; j--) {
-                if ($scope.positionsDOM[i][j]) {
-                    let rightSumChanged = rightSum(i, j);
-                    let rightMoveChanged = rightMove(i, j);
-
-                    if(rightSumChanged || rightMoveChanged) {
-                        stateChanged = true;
-                    }
-                }
-            }
-        }
-
-        return stateChanged;
-    }
-
-    const downSum = (actualIndex, actualCol) => {
-        let stateChanged = false;
-
-        for (let lineLoop = actualIndex - 1; lineLoop >= 0; lineLoop--) {
-            if ($scope.positionsDOM[lineLoop][actualCol] && $scope.positionsDOM[lineLoop][actualCol] === $scope.positionsDOM[actualIndex][actualCol] && (lineLoop + 1) < 4) {
-
-                let isPossibleSumFar;
-
-                for (let counter = lineLoop + 1; counter < 4; counter++) {
-                    if ($scope.positionsDOM[counter][actualCol]) {
-                        break;
-                    }
-                    
-                    isPossibleSumFar = true;
-                }
-
-                if (isPossibleSumFar) {
-                    $scope.positionsDOM[actualIndex][actualCol] = $scope.positionsDOM[actualIndex][actualCol] * 2;
-                    $scope.positionsDOM[lineLoop][actualCol] = null;
-
-                    stateChanged = true;
-                    break;
-                } else if ($scope.positionsDOM[actualIndex][actualCol] === $scope.positionsDOM[actualIndex - 1][actualCol] && $scope.positionsDOM[lineLoop][actualCol]) {
-                    $scope.positionsDOM[actualIndex][actualCol] = $scope.positionsDOM[actualIndex][actualCol] * 2; 
-                    $scope.positionsDOM[actualIndex - 1][actualCol] = null; 
-
-                    stateChanged = true;
-                    break;
-                }
-            }
-        }
-
-        return stateChanged;
-    }
-
-    const downMove = (actualIndex, actualCol) => {
-        let stateChanged = false;
-        let availableCornerNearest;
-
-        for (let i = actualIndex + 1; i < 4; i++) {
-            if ($scope.positionsDOM[i][actualCol]) {
-                continue;
-            }
-            availableCornerNearest = i;
-        }
-
-        if (typeof(availableCornerNearest) === 'number') {
-            $scope.positionsDOM[availableCornerNearest][actualCol] = $scope.positionsDOM[actualIndex][actualCol];
-            $scope.positionsDOM[actualIndex][actualCol] = null;
-
-            stateChanged = true;
-        }
-
-        return stateChanged;
-    }
-
-    const leftSum = (actualRow, actualIndex) => {
-        let stateChanged = false;
-
-        for (let lineLoop = actualIndex + 1; lineLoop < 4; lineLoop++) {
-            
-            if ($scope.positionsDOM[actualRow][lineLoop] && $scope.positionsDOM[actualRow][actualIndex] === $scope.positionsDOM[actualRow][lineLoop]) {
-                let isPossibleSumFar;
-                
-                for (let counter = lineLoop - 1; counter > 0; counter--) {
-                    if ($scope.positionsDOM[actualRow][counter]) {
-                        break;
-                    }
-                    
-                    isPossibleSumFar = true;
-                }
-
-                if (isPossibleSumFar) {
-                    $scope.positionsDOM[actualRow][actualIndex] = $scope.positionsDOM[actualRow][actualIndex] * 2;
-                    $scope.positionsDOM[actualRow][lineLoop] = null;
-
-                    stateChanged = true;
-                    break;
-                } else if ($scope.positionsDOM[actualRow][actualIndex] === $scope.positionsDOM[actualRow][actualIndex + 1] && (actualIndex + 1) < 4) {
-                    $scope.positionsDOM[actualRow][actualIndex] = $scope.positionsDOM[actualRow][actualIndex] * 2;
-                    $scope.positionsDOM[actualRow][actualIndex + 1] = null;
-
-                    stateChanged = true;
-                    break;
-                }
-            }
-        }
-
-        return stateChanged;
-    }
-
-    const leftMove = (actualRow, actualIndex) => {
-        let stateChanged = false;
-        let availableCornerNearest;
-
-        for (let i = actualIndex - 1; i >= 0; i--) {
-            if ($scope.positionsDOM[actualRow][i]) {
-                continue;
-            }
-            availableCornerNearest = i;
-        }
-
-        if (typeof(availableCornerNearest) === 'number') {
-            $scope.positionsDOM[actualRow][availableCornerNearest] = $scope.positionsDOM[actualRow][actualIndex];
-            $scope.positionsDOM[actualRow][actualIndex] = null; 
-
-            stateChanged = true;
-        }
-
-        return stateChanged;
-    }
-
-    const rightSum = (actualRow, actualIndex) => {
-        let stateChanged = false;
-
-        for (let lineLoop = actualIndex; lineLoop >= 0; lineLoop--) {
-            
-            if (lineLoop < actualIndex && $scope.positionsDOM[actualRow][lineLoop] && (lineLoop + 1) < 4 && $scope.positionsDOM[actualRow][actualIndex] === $scope.positionsDOM[actualRow][lineLoop]) {
-                let isPossibleSumFar;
-                
-                for (let counter = lineLoop + 1; counter < actualIndex; counter++) {
-                    if ($scope.positionsDOM[actualRow][counter]) {
-                        break;
-                    }
-                    
-                    isPossibleSumFar = true;
-                }
-
-                if (isPossibleSumFar) {
-                    $scope.positionsDOM[actualRow][actualIndex] = $scope.positionsDOM[actualRow][actualIndex] * 2;
-                    $scope.positionsDOM[actualRow][lineLoop] = null;
-
-                    stateChanged = true;
-                    break;
-                } else if ($scope.positionsDOM[actualRow][lineLoop] === $scope.positionsDOM[actualRow][lineLoop + 1] && (lineLoop + 1) < 4) {
-                    $scope.positionsDOM[actualRow][actualIndex] = $scope.positionsDOM[actualRow][actualIndex] * 2;
-                    $scope.positionsDOM[actualRow][lineLoop] = null;
-
-                    stateChanged = true;
-                    break;
-                }
-            }
-        }
-
-        return stateChanged;
-    }
-
-    const rightMove = (actualRow, actualIndex) => {
-        let stateChanged = false;
-        let availableCornerNearest;
-
-        for (let i = actualIndex + 1; i < 4; i++) {
-
-            if ($scope.positionsDOM[actualRow][i]) {
-                continue;
-            }
-            availableCornerNearest = i;
-        }
-
-        if (typeof(availableCornerNearest) === 'number') {
-            $scope.positionsDOM[actualRow][availableCornerNearest] = $scope.positionsDOM[actualRow][actualIndex];
-            $scope.positionsDOM[actualRow][actualIndex] = null;
-
-            stateChanged = true;
-        }
-
-        return stateChanged;
     }
 
     const availabilityObserver = () => {
