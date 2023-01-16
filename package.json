@@ -4,7 +4,8 @@
   "description": "2048 app",
   "main": "index.html",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",

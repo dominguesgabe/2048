@@ -1,23 +1,30 @@
-# AngularJs with Jest example
+# 2048 game with AngularJS
 
-https://www.curtiscode.dev/post/angularjs/angularjs-jest-unit-testing
+You can play the game online at
+
+> (https://dominguesgabe-2048.netlify.app/)
 
 ## Setup Steps
 
 ### Clone Repository
 
 ```
-git clone git@github.com:curtiscde/angularjs-jest-example.git
+git clone https://github.com/dominguesgabe/2048.git
 ```
 
 ### Npm install dependencies
 
 ```shell
-$ npm i
+$ npm install
 ```
 
 ### Run tests
 
 ```shell
-$ npm test
+$ npm run test
+```
+### Run tests with coverage
+
+```shell
+$ npm run coverage
 ```
