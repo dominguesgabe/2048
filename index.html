@@ -3,13 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <title>2048</title>
-        <link rel="stylesheet" href="assets/style.css">
-        <link rel="stylesheet" href="assets/reset.css">
-        <link rel="icon" type="image/png" href="assets/favicon.png">
+        <link rel="stylesheet" href="src/assets/style.css">
+        <link rel="stylesheet" href="src/assets/reset.css">
+        <link rel="icon" type="image/png" href="src/assets/favicon.png">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
-        <script src="app/app.js"></script>
-        <script src="app/appController.js"></script>
-        <script src="app/colorsService.js"></script>
+        <script src="src/js/app.js"></script>
+        <script src="src/js/appController.js"></script>
+        <script src="src/js/colorsService.js"></script>
+        <script src="src/js/collectionsFactory.js"></script>
+        <script src="src/js/moveItemsService.js"></script>
     </head>
     <body ng-controller="appController" ng-keyup="userClick($event.key)">
         <h1>2048</h1>
@@ -21,7 +23,7 @@
             </tr>
         </table>
         <div class="bottom-container">
-            <button class="start-btn" ng-click="startGame()" ng-disabled="gameInProgress">Começar!</button>
+            <button class="start-btn" ng-click="startGame()" ng-disabled="gameInProgress">Start!</button>
         </div>
     </body>
 </html>
