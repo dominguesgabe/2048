@@ -28,7 +28,7 @@ describe('Colors service test', function(){
         [2048, 'orange-item'],
         [16, 'green-item'],
         [256, 'green-item']
-    ]
+    ];
 
     test.each(cases)('should return the write color according to the number', (number, expectedColor) => {
         const numberColor = _colorsService.itemColor(number);
