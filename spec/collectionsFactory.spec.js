@@ -5,16 +5,16 @@ require('../src/js/collectionsFactory');
 
 describe('Collections factory test', function(){
 
+    let _collectionsFactory;
+    
     beforeEach(function() {
         angular.module('app2048');
         angular.mock.module('app2048');
+
+        inject((collectionsFactory) => {
+            _collectionsFactory = collectionsFactory;
+        })
     });
-
-    let _collectionsFactory;
-
-    beforeEach(inject((collectionsFactory) => {
-        _collectionsFactory = collectionsFactory;
-    }));
 
     it('should return a new positions array', function(){
         const positions = _collectionsFactory.positions();

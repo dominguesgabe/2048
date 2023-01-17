@@ -1,5 +1,5 @@
 angular.module("app2048").service("moveItemsService", function () {
-    function moveItemsUp(positionsDOM) {
+    function moveItemsUp(positionsDOM) { //TODO os métodos de move estão com esponsabilidade múltipla, verificando também se o estado mudou
         let stateChanged = false;
 
         for (let j = 0; j < 4; j++) {
