@@ -1,4 +1,4 @@
-app2048.controller("appController", function ($scope, $window, colorsService, collectionsFactory, moveItemsService) {
+app2048.controller("appController", function ($scope, $window, colorsService, collectionsFactory, moveItemsService, numbersService) {
 
     $scope.itemColor = colorsService.itemColor;
     $scope.gameInProgress = false;
@@ -11,12 +11,12 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
         $scope.gameInProgress = true;
         $scope.positionsDOM = new collectionsFactory.positions();
 
-        if(availabilityObserver()) {
+        if(availabilityObserver()) { //eu tô usando esse método pra gerar números aleatórios no começo do jogo mas talvez os outeros métodos já façam isso
             for(i = 0; i < 2; i++) {
-                let row = randomNum(4);
-                let col = randomNum(4);
+                let row = numbersService.randomNum(4);
+                let col = numbersService.randomNum(4);
                 if (!$scope.positionsDOM[row][col]) {
-                    $scope.positionsDOM[row][col] = randomNumTwoOrFour();
+                    $scope.positionsDOM[row][col] = numbersService.randomNumTwoOrFour();
                 }
             }
         }
@@ -33,7 +33,7 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
             
             switch(key) {
                 case 'ArrowUp':
-                    const [upPositionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM);
+                    const [upPositionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM); //o objeto do escopo segue sendo alterado
                     $scope.positionsDOM = upPositionsDOM;
                     stateChanged.up = moveUpChanged;
 
@@ -59,7 +59,8 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
             }
 
             stateChangedObserver(); //todo não adicionar estado caso o último movimento não tenha alterrado em nada o objeto
-            generateNumberOnEmptyPosition();
+            const positionsWithNewRandom = numbersService.generateNumberOnEmptyPosition($scope.positionsDOM, ocuppiedPositions); //positionsDOM é passado por inteiro
+            // $scope.positionsDOM = positionsWithNewRandom;
         }   
     }
 
@@ -91,90 +92,7 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
 
         $scope.gameInProgress = false;
     }
-
-    const randomNum = (limit) => {
-        return Math.floor(Math.random() * limit);
-    }
-
-    const randomNumTwoOrFour = () => {
-        const numberArray = [2, 4]; 
-        const random = Math.floor(Math.random() * 2);
-
-        return numberArray[random];
-    }
-
-    const randomNumberPosition = () => {
-        let randomNumberOfPosition = randomNum(16);
-        let randomPosition = [];
-
-        switch (randomNumberOfPosition) {
-            case 0:
-                randomPosition = [0,0];
-                break;
-            case 1:
-                randomPosition = [0,1];
-                break;
-            case 2:
-                randomPosition = [0,2];
-                break;
-            case 3:
-                randomPosition = [0,3];
-                break;
-            case 4:
-                randomPosition = [1,0];
-                break;
-            case 5:
-                randomPosition = [1,1];
-                break;
-            case 6:
-                randomPosition = [1,2];
-                break;
-            case 7:
-                randomPosition = [1,3];
-                break;
-            case 8:
-                randomPosition = [2,0];
-                break;
-            case 9:
-                randomPosition = [2,1];
-                break;
-            case 10:
-                randomPosition = [2,2];
-                break;
-            case 11:
-                randomPosition = [2,3];
-                break;
-            case 12:
-                randomPosition = [3,0];
-                break;
-            case 13:
-                randomPosition = [3,1];
-                break;
-            case 14:
-                randomPosition = [3,2];
-                break;
-            case 15:
-                randomPosition = [3,3];
-                break;
-        }
-
-        return randomPosition;
-    }
-
-    const generateNumberOnEmptyPosition = () => {
-
-        const randomPosition = randomNumberPosition();
-
-        if (ocuppiedPositions < 16) {
-            if($scope.positionsDOM[randomPosition[0]][randomPosition[1]] == null) {
-                $scope.positionsDOM[randomPosition[0]][randomPosition[1]] = 2;
-                return;
-            } else {
-                generateNumberOnEmptyPosition();
-            }
-        }
-    }
-
+  
     const stateChangedObserver = () => {
 
         if (Object.values(stateChanged).includes(true)) {
