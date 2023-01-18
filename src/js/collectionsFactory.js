@@ -8,17 +8,17 @@ angular.module("app2048").factory("collectionsFactory", function () {
         ];
     }
 
-    function stateChanged() {
+    function initialState() {
         return {
-            up: null,
-            down: null,
-            left: null,
-            right: null
+            'ArrowUp': null,
+            'ArrowDown': null,
+            'ArrowLeft': null,
+            'ArrowRight': null
         };
     }
 
     return {
         positions,
-        stateChanged
+        initialState
     };
 })

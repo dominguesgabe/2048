@@ -4,22 +4,14 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
     $scope.gameInProgress = false;
     $scope.positionsDOM = new collectionsFactory.positions();
 
-    let stateChanged = new collectionsFactory.stateChanged();
+    let stateChanged = new collectionsFactory.initialState();
     let ocuppiedPositions;
 
     $scope.startGame = () => {
         $scope.gameInProgress = true;
         $scope.positionsDOM = new collectionsFactory.positions();
 
-        if(availabilityObserver()) { //eu tô usando esse método pra gerar números aleatórios no começo do jogo mas talvez os outeros métodos já façam isso
-            for(i = 0; i < 2; i++) {
-                let row = numbersService.randomNum(4);
-                let col = numbersService.randomNum(4);
-                if (!$scope.positionsDOM[row][col]) {
-                    $scope.positionsDOM[row][col] = numbersService.randomNumTwoOrFour();
-                }
-            }
-        }
+        numbersService.startGameNumbers($scope.positionsDOM);
     }
 
     $scope.userClick = (key) => {
@@ -29,38 +21,47 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
             $scope.startGame();
         }
 
-        if($scope.gameInProgress && availabilityObserver() && keys.includes(key)) {
-            
+        availabilityObserver(); //melhorar para que ele seja chamado toda vez que o $positionsDOM mude
+
+        if($scope.gameInProgress && keys.includes(key)) {
+            let caller;
+
             switch(key) {
                 case 'ArrowUp':
-                    const [upPositionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM); //o objeto do escopo segue sendo alterado
-                    $scope.positionsDOM = upPositionsDOM;
-                    stateChanged.up = moveUpChanged;
+                    caller = key;
 
+                    const [upPositionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM);
+                    // $scope.positionsDOM = upPositionsDOM;
+                    stateChanged.ArrowUp = moveUpChanged;
                     break;
                 case 'ArrowDown':
-                    const [downPositionsDOM, moveDownChanged] = moveItemsService.moveItemsDown($scope.positionsDOM);
-                    $scope.positionsDOM = downPositionsDOM;
-                    stateChanged.down = moveDownChanged;
+                    caller = key;
 
+                    const [downPositionsDOM, moveDownChanged] = moveItemsService.moveItemsDown($scope.positionsDOM);
+                    // $scope.positionsDOM = downPositionsDOM;
+                    stateChanged.ArrowDown = moveDownChanged;
                     break;
                 case 'ArrowLeft':
-                    const [leftPositionsDOM, moveLeftChanged] = moveItemsService.moveItemsLeft($scope.positionsDOM);
-                    $scope.positionsDOM = leftPositionsDOM;
-                    stateChanged.left = moveLeftChanged;
+                    caller = key;
 
+                    const [leftPositionsDOM, moveLeftChanged] = moveItemsService.moveItemsLeft($scope.positionsDOM);
+                    // $scope.positionsDOM = leftPositionsDOM;
+                    stateChanged.ArrowLeft = moveLeftChanged;
                     break;
                 case 'ArrowRight':
+                    caller = key;
+
                     const [rightPositionsDOM, moveRightChanged] = moveItemsService.moveItemsRight($scope.positionsDOM);
-                    $scope.positionsDOM = rightPositionsDOM;
-                    stateChanged.right = moveRightChanged;
-                    
+                    // $scope.positionsDOM = rightPositionsDOM;
+                    stateChanged.ArrowRight = moveRightChanged;
                     break;  
             }
 
-            stateChangedObserver(); //todo não adicionar estado caso o último movimento não tenha alterrado em nada o objeto
-            const positionsWithNewRandom = numbersService.generateNumberOnEmptyPosition($scope.positionsDOM, ocuppiedPositions); //positionsDOM é passado por inteiro
-            // $scope.positionsDOM = positionsWithNewRandom;
+            stateChangedObserver();
+
+            if (stateChanged[caller] !== false) {
+                numbersService.generateNumberOnEmptyPosition($scope.positionsDOM, ocuppiedPositions);
+            }
         }   
     }
 
@@ -80,10 +81,9 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
         }
 
         ocuppiedPositions = allPositionsValue.length;
-        return true;
     }
 
-    const endGame = (status) => {
+    const endGame = (status) => { //melhorar interação de fim de jogo, manter nesse controller
         if (status === "victory") {
             $window.alert('Congrats, you win!');
         } else if (status === "lose") {
@@ -96,7 +96,7 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
     const stateChangedObserver = () => {
 
         if (Object.values(stateChanged).includes(true)) {
-            stateChanged = new collectionsFactory.stateChanged();
+            stateChanged = new collectionsFactory.initialState();
         }
 
         if (!Object.values(stateChanged).includes(null)) {

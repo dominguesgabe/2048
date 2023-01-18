@@ -29,15 +29,15 @@ describe('Collections factory test', function(){
     });
 
     it('should return a new state changed object', function(){
-        const stateChanged = _collectionsFactory.stateChanged();
+        const initialState = _collectionsFactory.initialState();
         const expected = {
-            up: null,
-            down: null,
-            left: null,
-            right: null
+            'ArrowUp': null,
+            'ArrowDown': null,
+            'ArrowLeft': null,
+            'ArrowRight': null
         };
 
-        expect(stateChanged).toEqual(expected);
+        expect(initialState).toEqual(expected);
     });
 
 });

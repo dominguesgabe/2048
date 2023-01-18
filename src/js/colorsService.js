@@ -22,5 +22,7 @@ angular.module("app2048").service("colorsService", function () {
         }
     }
 
-    return {itemColor};
+    return {
+        itemColor
+    };
 })

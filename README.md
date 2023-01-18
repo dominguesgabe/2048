@@ -2,7 +2,7 @@
 
 You can play the game online at
 
-> (https://dominguesgabe-2048.netlify.app/)
+> https://dominguesgabe-2048.netlify.app/
 
 ## Setup Steps
 
@@ -23,8 +23,7 @@ $ npm install
 ```shell
 $ npm run test
 ```
-### Run tests with coverage
-
+Run tests with coverage
 ```shell
 $ npm run coverage
 ```

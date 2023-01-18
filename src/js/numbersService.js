@@ -1,6 +1,6 @@
 angular.module("app2048").service("numbersService", function () {
     
-    const generateNumberOnEmptyPosition = (positionsDOM, ocuppiedPositions) => { //ainda está alterando o objeto do escopo, mas eu não entendo poque
+    const generateNumberOnEmptyPosition = (positionsDOM, ocuppiedPositions) => {
 
         const randomPosition = this.randomNumberPosition();
 
@@ -12,7 +12,7 @@ angular.module("app2048").service("numbersService", function () {
                 generateNumberOnEmptyPosition(positionsDOM);
             }
         }
-    }
+    };
 
     this.randomNumberPosition = () => {
         let randomNumberOfPosition = randomNum(16);
@@ -70,22 +70,35 @@ angular.module("app2048").service("numbersService", function () {
         }
 
         return randomPosition;
-    }
+    };
 
     const randomNum = (limit) => {
         return Math.floor(Math.random() * limit);
-    }
+    };
 
     const randomNumTwoOrFour = () => {
         const twoAndFour = [2, 4]; 
         const random = Math.floor(Math.random() * 2);
 
         return twoAndFour[random];
-    }
+    };
+
+    const startGameNumbers = (positionsDOM) => {
+        for(i = 0; i < 2; i++) {
+            let row = randomNum(4);
+            let col = randomNum(4);
+            if (!positionsDOM[row][col]) {
+                positionsDOM[row][col] = randomNumTwoOrFour();
+            }
+        }
+
+        return positionsDOM;
+    };
 
     return {
         generateNumberOnEmptyPosition,
         randomNumTwoOrFour,
+        startGameNumbers,
         randomNum
     };
 })
