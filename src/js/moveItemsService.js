@@ -1,5 +1,6 @@
 angular.module("app2048").service("moveItemsService", function () {
-    function moveItemsUp(positionsDOM) { //TODO os métodos de move estão com esponsabilidade múltipla, verificando também se o estado mudou
+    const moveItemsUp = (scopePositionsDOM) => {
+        let positionsDOM = angular.copy(scopePositionsDOM);
         let stateChanged = false;
 
         for (let j = 0; j < 4; j++) {
@@ -87,7 +88,8 @@ angular.module("app2048").service("moveItemsService", function () {
         ];
     };
 
-    const moveItemsDown = (positionsDOM) => {
+    const moveItemsDown = (scopePositionsDOM) => {
+        let positionsDOM = angular.copy(scopePositionsDOM);
         let stateChanged = false;
 
         for (let j = 0; j < 4; j++) {
@@ -174,7 +176,9 @@ angular.module("app2048").service("moveItemsService", function () {
         ];
     };
 
-    const moveItemsLeft = (positionsDOM) => {
+    const moveItemsLeft = (scopePositionsDOM) => {
+        let positionsDOM = angular.copy(scopePositionsDOM);
+
         let stateChanged = false;
 
         for (let i = 0; i < 4; i++) {
@@ -261,7 +265,8 @@ angular.module("app2048").service("moveItemsService", function () {
         ];
     };
 
-    const moveItemsRight = (positionsDOM) => {
+    const moveItemsRight = (scopePositionsDOM) => {
+        let positionsDOM = angular.copy(scopePositionsDOM);
         let stateChanged = false;
 
         for (let i = 3; i >= 0; i--) {

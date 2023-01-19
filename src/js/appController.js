@@ -1,4 +1,4 @@
-app2048.controller("appController", function ($scope, $window, colorsService, collectionsFactory, moveItemsService, numbersService) {
+app2048.controller("appController", function ($scope, colorsService, collectionsFactory, moveItemsService, numbersService) {
 
     $scope.itemColor = colorsService.itemColor;
     $scope.gameInProgress = false;
@@ -21,38 +21,32 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
             $scope.startGame();
         }
 
-        availabilityObserver(); //melhorar para que ele seja chamado toda vez que o $positionsDOM mude
-
         if($scope.gameInProgress && keys.includes(key)) {
             let caller;
 
             switch(key) {
                 case 'ArrowUp':
                     caller = key;
-
                     const [upPositionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM);
-                    // $scope.positionsDOM = upPositionsDOM;
+                    $scope.positionsDOM = upPositionsDOM;
                     stateChanged.ArrowUp = moveUpChanged;
                     break;
                 case 'ArrowDown':
                     caller = key;
-
                     const [downPositionsDOM, moveDownChanged] = moveItemsService.moveItemsDown($scope.positionsDOM);
-                    // $scope.positionsDOM = downPositionsDOM;
+                    $scope.positionsDOM = downPositionsDOM;
                     stateChanged.ArrowDown = moveDownChanged;
                     break;
                 case 'ArrowLeft':
                     caller = key;
-
                     const [leftPositionsDOM, moveLeftChanged] = moveItemsService.moveItemsLeft($scope.positionsDOM);
-                    // $scope.positionsDOM = leftPositionsDOM;
+                    $scope.positionsDOM = leftPositionsDOM;
                     stateChanged.ArrowLeft = moveLeftChanged;
                     break;
                 case 'ArrowRight':
                     caller = key;
-
                     const [rightPositionsDOM, moveRightChanged] = moveItemsService.moveItemsRight($scope.positionsDOM);
-                    // $scope.positionsDOM = rightPositionsDOM;
+                    $scope.positionsDOM = rightPositionsDOM;
                     stateChanged.ArrowRight = moveRightChanged;
                     break;  
             }
@@ -61,38 +55,44 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
 
             if (stateChanged[caller] !== false) {
                 numbersService.generateNumberOnEmptyPosition($scope.positionsDOM, ocuppiedPositions);
+                ocuppiedPositions = ocuppiedPositionsCounter($scope.positionsDOM);
             }
         }   
     }
 
-    const availabilityObserver = () => {
+    const victoryWatch = (newPositions) => {
+        newPositions.forEach(row => {
+            if (Object.values(row).includes(2048)) {
+                return endGame("victory");
+            }
+        });
+    }
+    $scope.$watch('positionsDOM', victoryWatch, true);
+    
+    const endGame = (status) => {
+        if (status === "victory") {
+            alert("Congrats, you win!");
+        } else if (status === "lose") {
+            alert("Sorry, you lost. But don't be shy, you can try again!");
+        }
+
+        return false;
+    }
+
+    const ocuppiedPositionsCounter = (positionsDOM) => {
         let allPositionsValue = [];
         
         for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
                 if (typeof($scope.positionsDOM[i][j]) === 'number') {
-                    allPositionsValue.push($scope.positionsDOM[i][j]);
-                }
-
-                if ($scope.positionsDOM[i][j] === 2048) {
-                    endGame("victory")
+                    allPositionsValue.push(positionsDOM[i][j]);
                 }
             }
         }
 
-        ocuppiedPositions = allPositionsValue.length;
+        return allPositionsValue.length;
     }
 
-    const endGame = (status) => { //melhorar interação de fim de jogo, manter nesse controller
-        if (status === "victory") {
-            $window.alert('Congrats, you win!');
-        } else if (status === "lose") {
-            $window.alert('Sorry, you lost. But don\'t be shy, you can try again!');
-        }
-
-        $scope.gameInProgress = false;
-    }
-  
     const stateChangedObserver = () => {
 
         if (Object.values(stateChanged).includes(true)) {
@@ -100,7 +100,7 @@ app2048.controller("appController", function ($scope, $window, colorsService, co
         }
 
         if (!Object.values(stateChanged).includes(null)) {
-            endGame('lose');
+            endGame("lose");
         }
     }
 });

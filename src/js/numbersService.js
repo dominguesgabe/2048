@@ -73,6 +73,10 @@ angular.module("app2048").service("numbersService", function () {
     };
 
     const randomNum = (limit) => {
+        if (typeof limit !== 'number') {
+            throw new Error('Wrong param type.');
+        }
+
         return Math.floor(Math.random() * limit);
     };
 
