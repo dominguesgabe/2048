@@ -28,7 +28,6 @@ app2048.controller("appController", function ($scope, colorsService, collections
                 case 'ArrowUp':
                     caller = key;
                     const [upPositionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM);
-                    console.log(moveUpChanged)
                     $scope.positionsDOM = upPositionsDOM;
                     stateChanged.ArrowUp = moveUpChanged;
                     break;
