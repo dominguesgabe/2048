@@ -54,5 +54,34 @@ describe('Numbers service test', function() {
     //         expect(actualPositions).not.toEqual(positions);
     //     })
     // });
+});
 
+describe('Test mock randomNum', function(){
+
+    beforeEach(function(){
+
+        angular.module('numbersService', []);
+        angular.mock.module('numbersService');
+
+        angular.mock.module(function($provide) {
+            $provide.service('numbersService', function(){
+                    return {
+                        randomNum: function(x){
+                            return 11;
+                        }
+                    };
+                });
+            });
+        });
+  
+    let _numbersService;
+  
+    beforeEach(inject((numbersService) => {
+      _numbersService = numbersService;
+    }));
+  
+    it('Should work', function(){
+      var actual = _numbersService.randomNum('a');
+      expect(actual).toEqual(13);
+    });
 });
