@@ -36,4 +36,23 @@ describe('Numbers service test', function() {
         })
     });
 
+    // describe('Test generateNumberOnEmptyPosition method', function() {
+
+    //     jest.mock('../src/js/numbersService', () => {
+    //         return [3,2];
+    //     });
+
+    //     const positions = [
+    //         {0: null, 1: null, 2: null, 3: null},
+    //         {0: null, 1: null, 2: null, 3: null},
+    //         {0: null, 1: null, 2: null, 3: null},
+    //         {0: null, 1: null, 2: null, 3: null}
+    //     ];
+
+    //     it ('Should generate a number on a empyt position', function() {
+    //         const actualPositions = _numbersService.generateNumberOnEmptyPosition([...positions], 0);
+    //         expect(actualPositions).not.toEqual(positions);
+    //     })
+    // });
+
 });

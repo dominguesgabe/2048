@@ -1,8 +1,8 @@
 angular.module("app2048").service("numbersService", function () {
     
     const generateNumberOnEmptyPosition = (positionsDOM, ocuppiedPositions) => {
-
-        const randomPosition = this.randomNumberPosition();
+        
+        const randomPosition = randomNumberPosition();
 
         if (ocuppiedPositions < 16) {
             if(positionsDOM[randomPosition[0]][randomPosition[1]] == null) {
@@ -14,7 +14,7 @@ angular.module("app2048").service("numbersService", function () {
         }
     };
 
-    this.randomNumberPosition = () => {
+    const randomNumberPosition = () => {
         let randomNumberOfPosition = randomNum(16);
         let randomPosition = [];
 
