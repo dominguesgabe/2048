@@ -1,6 +1,6 @@
 angular.module("app2048").service("moveItemsService", function () {
     const moveItemsUp = (positionsDOM) => {
-        // let positionsDOM = angular.copy(scopePositionsDOM);
+        // let positionsDOM = angular.copy(scopePositionsDOM); //voltei a usar o param por referência pois o desempenho foi muito afetado, TODO analisar
         let stateChanged = false;
 
         for (let j = 0; j < 4; j++) {

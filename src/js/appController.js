@@ -28,6 +28,7 @@ app2048.controller("appController", function ($scope, colorsService, collections
                 case 'ArrowUp':
                     caller = key;
                     const [upPositionsDOM, moveUpChanged] = moveItemsService.moveItemsUp($scope.positionsDOM);
+                    console.log(moveUpChanged)
                     $scope.positionsDOM = upPositionsDOM;
                     stateChanged.ArrowUp = moveUpChanged;
                     break;
@@ -53,8 +54,8 @@ app2048.controller("appController", function ($scope, colorsService, collections
 
             stateChangedObserver();
 
-            if (stateChanged[caller] !== false) {
-                numbersService.generateNumberOnEmptyPosition($scope.positionsDOM, ocuppiedPositions);
+            if (stateChanged[caller] || stateChanged[caller] === null) { //só está gerando número novo caso tenha somado
+                generateNumberOnEmptyPosition($scope.positionsDOM, ocuppiedPositions);
                 ocuppiedPositions = ocuppiedPositionsCounter($scope.positionsDOM);
             }
         }   
@@ -103,4 +104,17 @@ app2048.controller("appController", function ($scope, colorsService, collections
             endGame("lose");
         }
     }
+
+    const generateNumberOnEmptyPosition = (positionsDOM, ocuppiedPositions) => {
+        const randomPosition = numbersService.randomNumberPosition();
+
+        if (ocuppiedPositions < 16) {
+            if(positionsDOM[randomPosition[0]][randomPosition[1]] == null) {
+                positionsDOM[randomPosition[0]][randomPosition[1]] = 2;
+                return positionsDOM;
+            } else {
+                generateNumberOnEmptyPosition(positionsDOM);
+            }
+        }
+    };
 });

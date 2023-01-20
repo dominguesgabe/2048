@@ -1,18 +1,4 @@
 angular.module("app2048").service("numbersService", function () {
-    
-    const generateNumberOnEmptyPosition = (positionsDOM, ocuppiedPositions) => {
-        
-        const randomPosition = randomNumberPosition();
-
-        if (ocuppiedPositions < 16) {
-            if(positionsDOM[randomPosition[0]][randomPosition[1]] == null) {
-                positionsDOM[randomPosition[0]][randomPosition[1]] = 2;
-                return positionsDOM;
-            } else {
-                generateNumberOnEmptyPosition(positionsDOM);
-            }
-        }
-    };
 
     const randomNumberPosition = () => {
         let randomNumberOfPosition = randomNum(16);
@@ -100,8 +86,9 @@ angular.module("app2048").service("numbersService", function () {
     };
 
     return {
-        generateNumberOnEmptyPosition,
+        // generateNumberOnEmptyPosition,
         randomNumTwoOrFour,
+        randomNumberPosition,
         startGameNumbers,
         randomNum
     };
