@@ -1,6 +1,6 @@
 angular.module("app2048").service("moveItemsService", function () {
-    const moveItemsUp = (scopePositionsDOM) => {
-        let positionsDOM = angular.copy(scopePositionsDOM);
+    const moveItemsUp = (positionsDOM) => {
+        // let positionsDOM = angular.copy(scopePositionsDOM);
         let stateChanged = false;
 
         for (let j = 0; j < 4; j++) {
@@ -88,8 +88,8 @@ angular.module("app2048").service("moveItemsService", function () {
         ];
     };
 
-    const moveItemsDown = (scopePositionsDOM) => {
-        let positionsDOM = angular.copy(scopePositionsDOM);
+    const moveItemsDown = (positionsDOM) => {
+        // let positionsDOM = angular.copy(scopePositionsDOM);
         let stateChanged = false;
 
         for (let j = 0; j < 4; j++) {
@@ -176,8 +176,8 @@ angular.module("app2048").service("moveItemsService", function () {
         ];
     };
 
-    const moveItemsLeft = (scopePositionsDOM) => {
-        let positionsDOM = angular.copy(scopePositionsDOM);
+    const moveItemsLeft = (positionsDOM) => {
+        // let positionsDOM = angular.copy(scopePositionsDOM);
 
         let stateChanged = false;
 
@@ -265,8 +265,8 @@ angular.module("app2048").service("moveItemsService", function () {
         ];
     };
 
-    const moveItemsRight = (scopePositionsDOM) => {
-        let positionsDOM = angular.copy(scopePositionsDOM);
+    const moveItemsRight = (positionsDOM) => {
+        // let positionsDOM = angular.copy(scopePositionsDOM);
         let stateChanged = false;
 
         for (let i = 3; i >= 0; i--) {
