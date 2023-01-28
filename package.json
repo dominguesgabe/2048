@@ -5,7 +5,9 @@
   "main": "index.html",
   "scripts": {
     "test": "jest",
-    "coverage": "jest --coverage"
+    "watchtests": "jest -- watchAll",
+    "coverage": "jest --coverage",
+    "clear_jest": "jest --clearCache"
   },
   "repository": {
     "type": "git",

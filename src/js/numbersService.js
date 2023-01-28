@@ -1,7 +1,6 @@
 angular.module("app2048").service("numbersService", function () {
 
-    const randomNumberPosition = () => {
-        let randomNumberOfPosition = randomNum(16);
+    const randomNumberPosition = (randomNumberOfPosition) => {
         let randomPosition = [];
 
         switch (randomNumberOfPosition) {

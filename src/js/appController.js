@@ -105,7 +105,8 @@ app2048.controller("appController", function ($scope, colorsService, collections
     }
 
     const generateNumberOnEmptyPosition = (positionsDOM, ocuppiedPositions) => {
-        const randomPosition = numbersService.randomNumberPosition();
+        const randomNum = numbersService.randomNum(16);
+        const randomPosition = numbersService.randomNumberPosition(randomNum);
 
         if (ocuppiedPositions < 16) {
             if(positionsDOM[randomPosition[0]][randomPosition[1]] == null) {
